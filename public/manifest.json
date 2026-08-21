@@ -1,0 +1,17 @@
+{
+  "short_name": "NavalStudio",
+  "name": "NavalStudio - Vessel Engineering & Ship Design Suite",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#090d16",
+  "theme_color": "#0284c7",
+  "display": "standalone",
+  "orientation": "any",
+  "description": "Ship Design, Hydrodynamics, Propeller 3D Visualizer, and Maritime Documentation Suite for Vessel Operations at Sea"
+}

@@ -1,0 +1,59 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User profile document stored in Firestore",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "displayName": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["uid", "email"]
+    },
+    "GoogleForm": {
+      "title": "GoogleForm",
+      "description": "Google Form metadata stored in Firestore",
+      "type": "object",
+      "properties": {
+        "formId": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "responderUri": { "type": "string" },
+        "editUri": { "type": "string" },
+        "createdBy": { "type": "string" },
+        "createdAt": { "type": "string" },
+        "responseCount": { "type": "number" }
+      },
+      "required": ["formId", "title", "createdBy"]
+    },
+    "FormResponse": {
+      "title": "FormResponse",
+      "description": "Form response stored in Firestore",
+      "type": "object",
+      "properties": {
+        "responseId": { "type": "string" },
+        "formId": { "type": "string" },
+        "respondentEmail": { "type": "string" },
+        "submittedAt": { "type": "string" },
+        "answersSummary": { "type": "string" }
+      },
+      "required": ["responseId", "formId"]
+    }
+  },
+  "firestore": {
+    "/userProfiles/{userId}": {
+      "schema": "UserProfile",
+      "description": "User profile collection"
+    },
+    "/googleForms/{formId}": {
+      "schema": "GoogleForm",
+      "description": "Google Forms synced metadata"
+    },
+    "/formResponses/{responseId}": {
+      "schema": "FormResponse",
+      "description": "Form response records"
+    }
+  }
+}

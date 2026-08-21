@@ -1,0 +1,79 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helpers
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isValidUserProfile(data) {
+      return data.keys().hasAll(['uid', 'email'])
+        && data.uid is string && data.uid.size() <= 128
+        && data.email is string && data.email.size() <= 256;
+    }
+
+    function isValidGoogleForm(data) {
+      return data.keys().hasAll(['formId', 'title', 'createdBy'])
+        && data.formId is string && data.formId.size() <= 256
+        && data.title is string && data.title.size() <= 500
+        && data.createdBy is string && data.createdBy.size() <= 128;
+    }
+
+    function isValidFormResponse(data) {
+      return data.keys().hasAll(['responseId', 'formId'])
+        && data.responseId is string && data.responseId.size() <= 256
+        && data.formId is string && data.formId.size() <= 256;
+    }
+
+    // User Profiles
+    match /userProfiles/{userId} {
+      allow get: if isSignedIn();
+      allow list: if isSignedIn() && resource.data.uid == request.auth.uid;
+      allow create, update: if isOwner(userId) && isValidUserProfile(incoming());
+      allow delete: if isOwner(userId);
+    }
+
+    // Google Forms metadata
+    match /googleForms/{formId} {
+      allow get, list: if isSignedIn();
+      allow create: if isSignedIn() && isValidGoogleForm(incoming()) && incoming().createdBy == request.auth.uid;
+      allow update: if isSignedIn() && isValidGoogleForm(incoming()) && (existing().createdBy == request.auth.uid || incoming().createdBy == existing().createdBy);
+      allow delete: if isSignedIn() && existing().createdBy == request.auth.uid;
+    }
+
+    // Form Responses
+    match /formResponses/{responseId} {
+      allow get, list: if isSignedIn();
+      allow create, update: if isSignedIn() && isValidFormResponse(incoming());
+      allow delete: if isSignedIn();
+    }
+
+    // Test connection doc
+    match /test/{docId} {
+      allow read, write: if true;
+    }
+
+    // Global Catch-All Deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

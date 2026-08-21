@@ -1,0 +1,6 @@
+{
+  "name": "AI Maritime Hub",
+  "description": "The World's Smartest AI-Powered Maritime Intelligence, Engineering & Operational Platform for Naval Architects, Shipowners, and Global Maritime Leaders.",
+  "requestFramePermissions": ["microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
