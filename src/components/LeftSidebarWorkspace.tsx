@@ -66,7 +66,11 @@ import {
   SlidersHorizontal,
   Command,
   Folder,
-  FolderOpen
+  FolderOpen,
+  Home,
+  FileCode,
+  FileSpreadsheet,
+  CpuIcon
 } from 'lucide-react';
 
 export interface LeftSidebarWorkspaceProps {
@@ -104,7 +108,7 @@ export interface NavSubCategory {
 }
 
 export interface NavCategoryGroup {
-  id: string;
+  id: 'engineering' | 'regulatory' | 'research' | 'operational' | 'enterprise' | 'tools';
   title: string;
   icon: React.ReactNode;
   accentColor: string;
@@ -144,36 +148,21 @@ export const LeftSidebarWorkspace: React.FC<LeftSidebarWorkspaceProps> = ({
   const [pinnedViews, setPinnedViews] = useState<ViewMode[]>([
     'dashboard',
     'regulatory_hub',
-    'document_hub',
-    'ai_copilot',
     'ship_design_studio',
-    'ais_tracking'
+    'ais_tracking',
+    'ai_copilot',
+    'document_hub'
   ]);
 
-  // Nested Hierarchical Structure with Engineering, Regulatory, Research, Operational, Industry, Platform
+  // The 6 Primary Logical Categories Requested: Engineering, Regulatory, Research, Operational, Enterprise, Tools
   const categoryGroups: NavCategoryGroup[] = useMemo(
     () => [
       {
-        id: 'workspace_hub',
-        title: 'Core Workspaces & Hubs',
-        icon: <LayoutDashboard className="w-4 h-4 text-cyan-400" />,
-        accentColor: 'border-cyan-500/30 text-cyan-400',
-        badge: 'Core',
-        items: [
-          { id: 'dashboard', label: 'User Dashboard & Overview', view: 'dashboard', icon: <LayoutDashboard className="w-3.5 h-3.5 text-cyan-400" />, badge: 'Main' },
-          { id: 'regulatory_hub', label: 'IMO & Class Regulatory Hub', view: 'regulatory_hub', icon: <ShieldAlert className="w-3.5 h-3.5 text-emerald-400" />, badge: 'Statutory' },
-          { id: 'document_hub', label: 'Document Converter & Processing', view: 'document_hub', icon: <FileText className="w-3.5 h-3.5 text-amber-400" />, badge: '20+ Tools' },
-          { id: 'collaboration_ws', label: 'Collaboration Projects & CAD', view: 'collaboration_ws', icon: <FolderGit2 className="w-3.5 h-3.5 text-sky-400" />, badge: '6 Active' },
-          { id: 'maritime_super_app', label: 'Maritime Super App Portal', view: 'maritime_super_app', icon: <Ship className="w-3.5 h-3.5 text-indigo-400" /> },
-          { id: 'executive_dashboard', label: 'Executive Intelligence & BI', view: 'executive_dashboard', icon: <Activity className="w-3.5 h-3.5 text-rose-400" /> }
-        ]
-      },
-      {
         id: 'engineering',
-        title: 'Engineering & Naval Arch',
+        title: 'Engineering',
         icon: <Ship className="w-4 h-4 text-indigo-400" />,
         accentColor: 'border-indigo-500/30 text-indigo-400',
-        badge: 'CAD/FEA',
+        badge: 'CAD & FEA',
         subcategories: [
           {
             id: 'eng_cad_studio',
@@ -201,7 +190,8 @@ export const LeftSidebarWorkspace: React.FC<LeftSidebarWorkspaceProps> = ({
             icon: <Layers className="w-3.5 h-3.5 text-purple-400" />,
             items: [
               { id: 'ship_structural', label: 'Structural FEA & Scantlings', view: 'ship_structural', icon: <Layers className="w-3.5 h-3.5 text-purple-400" />, badge: 'IACS CSR' },
-              { id: 'naval_arch_lab', label: 'Naval Architecture Lab', view: 'naval_arch_lab', icon: <Compass className="w-3.5 h-3.5 text-lime-400" /> }
+              { id: 'naval_arch_lab', label: 'Naval Architecture Lab', view: 'naval_arch_lab', icon: <Compass className="w-3.5 h-3.5 text-lime-400" /> },
+              { id: 'smart_shipyard', label: 'Smart Shipyard & Robotics', view: 'smart_shipyard', icon: <Cpu className="w-3.5 h-3.5 text-blue-400" /> }
             ]
           },
           {
@@ -210,6 +200,7 @@ export const LeftSidebarWorkspace: React.FC<LeftSidebarWorkspaceProps> = ({
             icon: <Calculator className="w-3.5 h-3.5 text-emerald-400" />,
             items: [
               { id: 'calculators', label: 'Marine Engineering Calculators', view: 'calculators', icon: <Calculator className="w-3.5 h-3.5 text-emerald-400" />, badge: '100+ Formulas' },
+              { id: 'formula_library', label: 'Maritime Formula Library', view: 'formula_library', icon: <FileCode className="w-3.5 h-3.5 text-cyan-400" /> },
               { id: 'unit_converter', label: 'Maritime Unit Converter', view: 'unit_converter', icon: <Sliders className="w-3.5 h-3.5 text-slate-400" /> }
             ]
           }
@@ -217,18 +208,19 @@ export const LeftSidebarWorkspace: React.FC<LeftSidebarWorkspaceProps> = ({
       },
       {
         id: 'regulatory',
-        title: 'Regulatory & Compliance',
+        title: 'Regulatory',
         icon: <ShieldCheck className="w-4 h-4 text-emerald-400" />,
         accentColor: 'border-emerald-500/30 text-emerald-400',
-        badge: 'IMO/IACS',
+        badge: 'IMO & Class',
         subcategories: [
           {
             id: 'reg_statutory_hubs',
-            title: 'IMO & Statutory Frameworks',
+            title: 'IMO & Statutory Hubs',
             icon: <ShieldAlert className="w-3.5 h-3.5 text-emerald-400" />,
             items: [
               { id: 'regulatory_hub_reg', label: 'IMO, SOLAS & MARPOL Hub', view: 'regulatory_hub', icon: <ShieldAlert className="w-3.5 h-3.5 text-emerald-400" />, badge: 'New Hub' },
-              { id: 'compliance', label: 'Statutory Compliance Matrix', view: 'compliance', icon: <CheckCircle2 className="w-3.5 h-3.5 text-teal-400" /> }
+              { id: 'compliance', label: 'Statutory Compliance Matrix', view: 'compliance', icon: <CheckCircle2 className="w-3.5 h-3.5 text-teal-400" /> },
+              { id: 'maritime_regulations', label: 'Global Maritime Regulations', view: 'maritime_regulations', icon: <FileText className="w-3.5 h-3.5 text-amber-400" /> }
             ]
           },
           {
@@ -236,7 +228,7 @@ export const LeftSidebarWorkspace: React.FC<LeftSidebarWorkspaceProps> = ({
             title: 'Classification Societies (7 Class)',
             icon: <Award className="w-3.5 h-3.5 text-cyan-400" />,
             items: [
-              { id: 'class_society', label: 'Classification Rules & Notations', view: 'class_society', icon: <Award className="w-3.5 h-3.5 text-cyan-400" /> }
+              { id: 'class_society', label: 'Classification Rules & Notations', view: 'class_society', icon: <Award className="w-3.5 h-3.5 text-cyan-400" />, badge: 'IACS' }
             ]
           },
           {
@@ -264,7 +256,7 @@ export const LeftSidebarWorkspace: React.FC<LeftSidebarWorkspaceProps> = ({
             title: 'Cyber Security & Defense',
             icon: <Lock className="w-3.5 h-3.5 text-purple-400" />,
             items: [
-              { id: 'cybersecurity', label: 'Maritime Cyber Security UR E26', view: 'cybersecurity', icon: <Lock className="w-3.5 h-3.5 text-purple-400" /> },
+              { id: 'cybersecurity', label: 'Maritime Cyber Security UR E26', view: 'cybersecurity', icon: <Lock className="w-3.5 h-3.5 text-purple-400" />, badge: 'UR E26' },
               { id: 'naval_defense', label: 'Naval Defense & Security', view: 'naval_defense', icon: <ShieldCheck className="w-3.5 h-3.5 text-rose-400" /> }
             ]
           }
@@ -272,68 +264,65 @@ export const LeftSidebarWorkspace: React.FC<LeftSidebarWorkspaceProps> = ({
       },
       {
         id: 'research',
-        title: 'Research & AI Intelligence',
-        icon: <Bot className="w-4 h-4 text-cyan-400" />,
-        accentColor: 'border-cyan-500/30 text-cyan-400',
-        badge: 'AI RAG',
+        title: 'Research',
+        icon: <BookOpen className="w-4 h-4 text-purple-400" />,
+        accentColor: 'border-purple-500/30 text-purple-400',
+        badge: 'Academy & R&D',
         subcategories: [
           {
-            id: 'res_copilot_gen',
-            title: 'AI Copilot & Generation',
+            id: 'res_academic_gen',
+            title: 'Academic & Thesis Generators',
             icon: <Sparkles className="w-3.5 h-3.5 text-cyan-400" />,
             items: [
-              { id: 'ai_copilot', label: 'AI Copilot Suite Hub', view: 'ai_copilot', icon: <Bot className="w-3.5 h-3.5 text-cyan-400" />, badge: 'Pro AI' },
-              { id: 'ai_chat', label: 'Maritime AI Chat Assistant', view: 'ai_chat', icon: <Sparkles className="w-3.5 h-3.5 text-blue-400" /> },
-              { id: 'ai_assistant_builder', label: 'AI Agent Builder & Store', view: 'ai_assistant_builder', icon: <Bot className="w-3.5 h-3.5 text-violet-400" />, badge: '2.4k+ Bots' },
               { id: 'thesis_gen', label: 'AI Thesis & Research Gen', view: 'thesis_gen', icon: <BookOpen className="w-3.5 h-3.5 text-emerald-400" />, badge: 'IEEE/SNAME' },
-              { id: 'report_gen', label: 'AI Engineering Report Gen', view: 'report_gen', icon: <FileText className="w-3.5 h-3.5 text-indigo-400" /> }
+              { id: 'report_gen', label: 'AI Engineering Report Gen', view: 'report_gen', icon: <FileText className="w-3.5 h-3.5 text-indigo-400" /> },
+              { id: 'research_lab', label: 'Maritime Research Lab', view: 'research_lab', icon: <Activity className="w-3.5 h-3.5 text-rose-400" />, badge: 'Peer-Rev' }
             ]
           },
           {
-            id: 'res_search_kg',
-            title: 'Search & Knowledge Graph',
-            icon: <Search className="w-3.5 h-3.5 text-amber-400" />,
+            id: 'res_library_graph',
+            title: 'Digital Library & Knowledge',
+            icon: <Bookmark className="w-3.5 h-3.5 text-amber-400" />,
             items: [
-              { id: 'ai_maritime_search', label: 'Maritime RAG Semantic Search', view: 'ai_maritime_search', icon: <Search className="w-3.5 h-3.5 text-amber-400" /> },
-              { id: 'knowledge_graph', label: 'Maritime Knowledge Graph', view: 'knowledge_graph', icon: <Share2 className="w-3.5 h-3.5 text-blue-400" /> },
-              { id: 'prompt_library', label: 'Naval Architecture Prompts', view: 'prompt_library', icon: <Bookmark className="w-3.5 h-3.5 text-teal-400" /> }
-            ]
-          },
-          {
-            id: 'res_library_academic',
-            title: 'Digital Library & Academics',
-            icon: <BookOpen className="w-3.5 h-3.5 text-purple-400" />,
-            items: [
-              { id: 'knowledge_hub', label: 'Knowledge Hub Overview', view: 'knowledge_hub', icon: <BookOpen className="w-3.5 h-3.5 text-purple-400" /> },
               { id: 'maritime_digital_library', label: 'Maritime Digital Library', view: 'maritime_digital_library', icon: <Bookmark className="w-3.5 h-3.5 text-amber-400" />, badge: '50k+ Docs' },
-              { id: 'research_lab', label: 'Maritime Research Lab', view: 'research_lab', icon: <Activity className="w-3.5 h-3.5 text-rose-400" />, badge: 'Peer-Rev' },
-              { id: 'universities', label: 'Global Maritime Universities', view: 'universities', icon: <GraduationCap className="w-3.5 h-3.5 text-indigo-400" /> },
-              { id: 'scholarships', label: 'Scholarships Portal', view: 'scholarships', icon: <Award className="w-3.5 h-3.5 text-amber-400" /> }
+              { id: 'knowledge_hub', label: 'Knowledge Hub Overview', view: 'knowledge_hub', icon: <BookOpen className="w-3.5 h-3.5 text-purple-400" /> },
+              { id: 'knowledge_graph', label: 'Maritime Knowledge Graph', view: 'knowledge_graph', icon: <Share2 className="w-3.5 h-3.5 text-blue-400" /> },
+              { id: 'maritime_news_intelligence', label: 'Maritime News & Wire Intel', view: 'maritime_news_intelligence', icon: <Newspaper className="w-3.5 h-3.5 text-emerald-400" />, badge: 'Live Wire' }
             ]
           },
           {
-            id: 'res_learning_certs',
-            title: 'Academy & Certification',
+            id: 'res_universities_scholars',
+            title: 'Universities & Scholarships',
             icon: <GraduationCap className="w-3.5 h-3.5 text-indigo-400" />,
+            items: [
+              { id: 'universities', label: 'Global Maritime Universities', view: 'universities', icon: <GraduationCap className="w-3.5 h-3.5 text-indigo-400" /> },
+              { id: 'scholarships', label: 'Maritime Scholarships Portal', view: 'scholarships', icon: <Award className="w-3.5 h-3.5 text-amber-400" /> },
+              { id: 'internships', label: 'Cadetships & Internships', view: 'internships', icon: <Briefcase className="w-3.5 h-3.5 text-cyan-400" /> }
+            ]
+          },
+          {
+            id: 'res_academy_certs',
+            title: 'Academy & Certifications',
+            icon: <Award className="w-3.5 h-3.5 text-teal-400" />,
             items: [
               { id: 'learning_academy', label: 'Learning Academy Suite', view: 'learning_academy', icon: <GraduationCap className="w-3.5 h-3.5 text-indigo-400" /> },
               { id: 'ai_exam_prep', label: 'AI Exam Prep & CoC Certs', view: 'ai_exam_prep', icon: <Award className="w-3.5 h-3.5 text-teal-400" />, badge: 'Exam AI' },
               { id: 'video_learning', label: 'Masterclass Video Academy', view: 'video_learning', icon: <Video className="w-3.5 h-3.5 text-sky-400" /> },
-              { id: 'ai_translator', label: 'Technical Translator (40+ Lang)', view: 'ai_translator', icon: <Globe className="w-3.5 h-3.5 text-emerald-400" /> }
+              { id: 'ai_career_path_planner', label: 'AI Career Path Planner', view: 'ai_career_path_planner', icon: <TrendingUp className="w-3.5 h-3.5 text-rose-400" /> }
             ]
           }
         ]
       },
       {
         id: 'operational',
-        title: 'Operational & Fleet',
+        title: 'Operational',
         icon: <Radar className="w-4 h-4 text-emerald-400" />,
         accentColor: 'border-emerald-500/30 text-emerald-400',
-        badge: 'Live AIS',
+        badge: 'Fleet & Nav',
         subcategories: [
           {
             id: 'ops_tracking_nav',
-            title: 'AIS & Vessel Navigation',
+            title: 'AIS Radar & Navigation',
             icon: <Radar className="w-3.5 h-3.5 text-emerald-400" />,
             items: [
               { id: 'ais_tracking', label: 'Real-Time AIS Vessel Radar', view: 'ais_tracking', icon: <Radar className="w-3.5 h-3.5 text-emerald-400" />, badge: 'Satellite' },
@@ -350,7 +339,8 @@ export const LeftSidebarWorkspace: React.FC<LeftSidebarWorkspaceProps> = ({
               { id: 'fleet_mgmt', label: 'Fleet Telemetry & Tracking', view: 'fleet_mgmt', icon: <Ship className="w-3.5 h-3.5 text-indigo-400" /> },
               { id: 'cargo_planning', label: 'Cargo Stowage & Stability', view: 'cargo_planning', icon: <Layers className="w-3.5 h-3.5 text-amber-400" /> },
               { id: 'marine_fuel', label: 'Bunker Optimization & Fuel EU', view: 'marine_fuel', icon: <Fuel className="w-3.5 h-3.5 text-orange-400" /> },
-              { id: 'chartering_freight', label: 'Chartering & Freight Desk', view: 'chartering_freight', icon: <TrendingUp className="w-3.5 h-3.5 text-blue-400" /> }
+              { id: 'chartering_freight', label: 'Chartering & Freight Desk', view: 'chartering_freight', icon: <TrendingUp className="w-3.5 h-3.5 text-blue-400" /> },
+              { id: 'maritime_finance', label: 'Maritime Finance Desk', view: 'maritime_finance', icon: <DollarSign className="w-3.5 h-3.5 text-emerald-400" /> }
             ]
           },
           {
@@ -373,7 +363,6 @@ export const LeftSidebarWorkspace: React.FC<LeftSidebarWorkspaceProps> = ({
               { id: 'offshore_wind_dashboard', label: 'Offshore Wind Farm Hub', view: 'offshore_wind_dashboard', icon: <Wind className="w-3.5 h-3.5 text-emerald-400" />, badge: 'Offshore' },
               { id: 'offshore_renewables', label: 'Wave & Tidal Renewables', view: 'offshore_renewables', icon: <Zap className="w-3.5 h-3.5 text-cyan-400" /> },
               { id: 'autonomous_shipping', label: 'Autonomous Vessels & MASS', view: 'autonomous_shipping', icon: <Cpu className="w-3.5 h-3.5 text-purple-400" />, badge: 'MASS' },
-              { id: 'smart_shipyard', label: 'Smart Shipyard & Robotics', view: 'smart_shipyard', icon: <Cpu className="w-3.5 h-3.5 text-blue-400" /> },
               { id: 'smart_ship', label: 'Smart Ship & Edge IoT Hub', view: 'smart_ship', icon: <Radio className="w-3.5 h-3.5 text-amber-400" /> },
               { id: 'blue_economy', label: 'Blue Economy & Ocean Science', view: 'blue_economy', icon: <Globe className="w-3.5 h-3.5 text-teal-400" /> }
             ]
@@ -381,61 +370,115 @@ export const LeftSidebarWorkspace: React.FC<LeftSidebarWorkspaceProps> = ({
         ]
       },
       {
-        id: 'industry_commerce',
-        title: 'Industry & Commerce',
+        id: 'enterprise',
+        title: 'Enterprise',
         icon: <Briefcase className="w-4 h-4 text-blue-400" />,
         accentColor: 'border-blue-500/30 text-blue-400',
-        badge: 'Market',
+        badge: 'BI & Market',
         subcategories: [
           {
-            id: 'ind_marketplace',
+            id: 'ent_bi_workspace',
+            title: 'Executive BI & Workspaces',
+            icon: <Activity className="w-3.5 h-3.5 text-rose-400" />,
+            items: [
+              { id: 'executive_dashboard', label: 'Executive Intelligence & BI', view: 'executive_dashboard', icon: <Activity className="w-3.5 h-3.5 text-rose-400" /> },
+              { id: 'collaboration_ws', label: 'Collaboration Projects & CAD', view: 'collaboration_ws', icon: <FolderGit2 className="w-3.5 h-3.5 text-sky-400" />, badge: '6 Active' },
+              { id: 'maritime_super_app', label: 'Maritime Super App Portal', view: 'maritime_super_app', icon: <Ship className="w-3.5 h-3.5 text-indigo-400" /> },
+              { id: 'workflow_automation', label: 'Workflow Automation Hub', view: 'workflow_automation', icon: <Zap className="w-3.5 h-3.5 text-amber-400" /> }
+            ]
+          },
+          {
+            id: 'ent_commerce_market',
             title: 'Marketplace & Procurement',
             icon: <Store className="w-3.5 h-3.5 text-teal-400" />,
             items: [
               { id: 'marketplace', label: 'AI Agent Store & Marketplace', view: 'marketplace', icon: <Store className="w-3.5 h-3.5 text-teal-400" />, badge: 'App Store' },
               { id: 'interactive_ship_db', label: 'Interactive Ship Database', view: 'interactive_ship_db', icon: <Database className="w-3.5 h-3.5 text-indigo-400" /> },
               { id: 'marine_equipment_db', label: 'Marine Equipment Catalog', view: 'marine_equipment_db', icon: <Box className="w-3.5 h-3.5 text-amber-400" /> },
-              { id: 'procurement_mkt', label: 'Ship Spares Procurement', view: 'procurement_mkt', icon: <ShoppingBag className="w-3.5 h-3.5 text-purple-400" /> }
+              { id: 'procurement_mkt', label: 'Ship Spares Procurement', view: 'procurement_mkt', icon: <ShoppingBag className="w-3.5 h-3.5 text-purple-400" /> },
+              { id: 'dataset_marketplace', label: 'Dataset & Research Market', view: 'dataset_marketplace', icon: <Database className="w-3.5 h-3.5 text-blue-400" /> }
             ]
           },
           {
-            id: 'ind_jobs_crew',
+            id: 'ent_crew_medical',
             title: 'Jobs, Crew & Medical',
             icon: <Users className="w-3.5 h-3.5 text-emerald-400" />,
             items: [
               { id: 'jobs', label: 'Maritime Job Board & Crewing', view: 'jobs', icon: <Briefcase className="w-3.5 h-3.5 text-sky-400" /> },
               { id: 'crew_management', label: 'Crew Management & STCW', view: 'crew_management', icon: <Users className="w-3.5 h-3.5 text-emerald-400" /> },
               { id: 'maritime_medical', label: 'Maritime Telemedicine & Health', view: 'maritime_medical', icon: <HeartPulse className="w-3.5 h-3.5 text-rose-400" /> },
-              { id: 'internships', label: 'Cadetships & Internships', view: 'internships', icon: <Briefcase className="w-3.5 h-3.5 text-cyan-400" /> }
+              { id: 'resume_builder', label: 'Maritime Resume Builder', view: 'resume_builder', icon: <FileText className="w-3.5 h-3.5 text-amber-400" /> }
             ]
           },
           {
-            id: 'ind_intel_community',
-            title: 'News, Intel & Community',
-            icon: <Newspaper className="w-3.5 h-3.5 text-emerald-400" />,
+            id: 'ent_intel_directory',
+            title: 'Due Diligence & Directory',
+            icon: <Building2 className="w-3.5 h-3.5 text-cyan-400" />,
             items: [
               { id: 'maritime_industry', label: 'Maritime Industry Overview', view: 'maritime_industry', icon: <Briefcase className="w-3.5 h-3.5 text-blue-400" /> },
-              { id: 'maritime_news_intelligence', label: 'Maritime News & Wire Intel', view: 'maritime_news_intelligence', icon: <Newspaper className="w-3.5 h-3.5 text-emerald-400" />, badge: 'Live Wire' },
               { id: 'company_intelligence', label: 'Company Due Diligence & Intel', view: 'company_intelligence', icon: <FileSearch className="w-3.5 h-3.5 text-lime-400" /> },
               { id: 'startup_hub', label: 'Maritime Startup Incubator', view: 'startup_hub', icon: <Rocket className="w-3.5 h-3.5 text-orange-400" /> },
               { id: 'global_directory', label: 'Global Maritime Directory', view: 'global_directory', icon: <Building2 className="w-3.5 h-3.5 text-cyan-400" /> },
               { id: 'community', label: 'Global Maritime Community', view: 'community', icon: <Users className="w-3.5 h-3.5 text-teal-400" /> },
-              { id: 'maritime_events', label: 'Global Summits & Exhibitions', view: 'maritime_events', icon: <Calendar className="w-3.5 h-3.5 text-rose-400" /> }
+              { id: 'maritime_events', label: 'Global Summits & Exhibitions', view: 'maritime_events', icon: <Calendar className="w-3.5 h-3.5 text-rose-400" /> },
+              { id: 'innovation_challenge', label: 'Maritime Innovation Challenges', view: 'innovation_challenge', icon: <Sparkles className="w-3.5 h-3.5 text-amber-400" /> }
             ]
           }
         ]
       },
       {
-        id: 'platform_admin',
-        title: 'Platform & Settings',
-        icon: <DollarSign className="w-4 h-4 text-amber-400" />,
-        accentColor: 'border-amber-500/30 text-amber-400',
-        badge: 'SaaS',
-        items: [
-          { id: 'saas_billing', label: 'SaaS Subscription & Plans', view: 'saas_billing', icon: <CreditCard className="w-3.5 h-3.5 text-emerald-400" />, badge: 'Plans' },
-          { id: 'monetization_suite', label: 'Platform Monetization Suite', view: 'monetization_suite', icon: <DollarSign className="w-3.5 h-3.5 text-amber-400" /> },
-          { id: 'api_sdk', label: 'Public API & Webhooks SDK', view: 'api_sdk', icon: <Code2 className="w-3.5 h-3.5 text-cyan-400" />, badge: 'v2.4' },
-          { id: 'admin', label: 'Admin & System Settings', view: 'admin', icon: <Settings className="w-3.5 h-3.5 text-slate-400" /> }
+        id: 'tools',
+        title: 'Tools',
+        icon: <SlidersHorizontal className="w-4 h-4 text-cyan-400" />,
+        accentColor: 'border-cyan-500/30 text-cyan-400',
+        badge: 'AI & SaaS',
+        subcategories: [
+          {
+            id: 'tools_core_workspace',
+            title: 'Workspace & Overview',
+            icon: <LayoutDashboard className="w-3.5 h-3.5 text-cyan-400" />,
+            items: [
+              { id: 'dashboard', label: 'User Dashboard & Overview', view: 'dashboard', icon: <LayoutDashboard className="w-3.5 h-3.5 text-cyan-400" />, badge: 'Main' },
+              { id: 'home', label: 'Home Portal', view: 'home', icon: <Home className="w-3.5 h-3.5 text-blue-400" /> }
+            ]
+          },
+          {
+            id: 'tools_ai_suite',
+            title: 'AI Copilot & Search Suite',
+            icon: <Bot className="w-3.5 h-3.5 text-cyan-400" />,
+            items: [
+              { id: 'ai_copilot', label: 'AI Copilot Suite Hub', view: 'ai_copilot', icon: <Bot className="w-3.5 h-3.5 text-cyan-400" />, badge: 'Pro AI' },
+              { id: 'ai_chat', label: 'Maritime AI Chat Assistant', view: 'ai_chat', icon: <Sparkles className="w-3.5 h-3.5 text-blue-400" /> },
+              { id: 'ai_assistant_builder', label: 'AI Agent Builder & Store', view: 'ai_assistant_builder', icon: <Bot className="w-3.5 h-3.5 text-violet-400" />, badge: '2.4k+ Bots' },
+              { id: 'ai_maritime_search', label: 'Maritime RAG Semantic Search', view: 'ai_maritime_search', icon: <Search className="w-3.5 h-3.5 text-amber-400" /> },
+              { id: 'prompt_library', label: 'Naval Architecture Prompts', view: 'prompt_library', icon: <Bookmark className="w-3.5 h-3.5 text-teal-400" /> },
+              { id: 'ai_translator', label: 'Technical Translator (40+ Lang)', view: 'ai_translator', icon: <Globe className="w-3.5 h-3.5 text-emerald-400" /> }
+            ]
+          },
+          {
+            id: 'tools_doc_processing',
+            title: 'Documents & Conversion',
+            icon: <FileText className="w-3.5 h-3.5 text-amber-400" />,
+            items: [
+              { id: 'document_hub', label: 'Document Converter & Processing', view: 'document_hub', icon: <FileText className="w-3.5 h-3.5 text-amber-400" />, badge: '20+ Tools' },
+              { id: 'ai_productivity_suite', label: 'AI Productivity Suite', view: 'ai_productivity_suite', icon: <Sliders className="w-3.5 h-3.5 text-indigo-400" /> },
+              { id: 'google_forms', label: 'Google Forms Integration Hub', view: 'google_forms', icon: <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-400" /> },
+              { id: 'cloud_workspace', label: 'Cloud Workspace & Storage', view: 'cloud_workspace', icon: <FolderGit2 className="w-3.5 h-3.5 text-sky-400" /> }
+            ]
+          },
+          {
+            id: 'tools_monetization_admin',
+            title: 'SaaS, Developer & Admin',
+            icon: <DollarSign className="w-3.5 h-3.5 text-emerald-400" />,
+            items: [
+              { id: 'saas_billing', label: 'SaaS Subscription & Plans', view: 'saas_billing', icon: <CreditCard className="w-3.5 h-3.5 text-emerald-400" />, badge: 'Plans' },
+              { id: 'monetization_suite', label: 'Platform Monetization Suite', view: 'monetization_suite', icon: <DollarSign className="w-3.5 h-3.5 text-amber-400" /> },
+              { id: 'api_sdk', label: 'Public API & Webhooks SDK', view: 'api_sdk', icon: <Code2 className="w-3.5 h-3.5 text-cyan-400" />, badge: 'v2.4' },
+              { id: 'admin', label: 'Admin & System Settings', view: 'admin', icon: <Settings className="w-3.5 h-3.5 text-slate-400" /> },
+              { id: 'affiliate', label: 'Affiliate Partner Program', view: 'affiliate', icon: <Share2 className="w-3.5 h-3.5 text-rose-400" /> },
+              { id: 'seo', label: 'SEO & Portal Indexing', view: 'seo', icon: <Globe className="w-3.5 h-3.5 text-teal-400" /> }
+            ]
+          }
         ]
       }
     ],
@@ -472,18 +515,17 @@ export const LeftSidebarWorkspace: React.FC<LeftSidebarWorkspaceProps> = ({
         }
       }
     }
-    return { activeCatId: 'workspace_hub', activeSubId: null };
+    return { activeCatId: 'tools', activeSubId: null };
   }, [currentView, categoryGroups]);
 
-  // Collapsed / Expanded state per Category
+  // Collapsed / Expanded state per Category (Engineering, Regulatory, Research, Operational, Enterprise, Tools)
   const [openCategories, setOpenCategories] = useState<Record<string, boolean>>({
-    workspace_hub: true,
     engineering: true,
-    regulatory: false,
+    regulatory: true,
     research: false,
     operational: false,
-    industry_commerce: false,
-    platform_admin: false
+    enterprise: false,
+    tools: false
   });
 
   // Collapsed / Expanded state per Subcategory
@@ -497,17 +539,22 @@ export const LeftSidebarWorkspace: React.FC<LeftSidebarWorkspaceProps> = ({
     reg_surveys_psc: false,
     reg_environment_decarb: false,
     reg_security_defense: false,
-    res_copilot_gen: true,
-    res_search_kg: false,
-    res_library_academic: false,
-    res_learning_certs: false,
+    res_academic_gen: true,
+    res_library_graph: false,
+    res_universities_scholars: false,
+    res_academy_certs: false,
     ops_tracking_nav: true,
     ops_fleet_cargo: false,
     ops_maintenance: false,
     ops_sim_oceantech: false,
-    ind_marketplace: true,
-    ind_jobs_crew: false,
-    ind_intel_community: false
+    ent_bi_workspace: true,
+    ent_commerce_market: false,
+    ent_crew_medical: false,
+    ent_intel_directory: false,
+    tools_core_workspace: true,
+    tools_ai_suite: true,
+    tools_doc_processing: false,
+    tools_monetization_admin: false
   });
 
   // Auto-expand category and subcategory on view change
@@ -753,7 +800,7 @@ export const LeftSidebarWorkspace: React.FC<LeftSidebarWorkspaceProps> = ({
               <div className="flex items-center gap-1.5">
                 <span className="text-xs font-bold text-white tracking-tight">Platform Modules</span>
                 <span className="px-1.5 py-0.2 rounded text-[10px] font-bold bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
-                  Nested Dropdowns
+                  6 Categories
                 </span>
               </div>
               <span className="text-[10px] text-slate-400 font-mono">Role: {userRole}</span>
