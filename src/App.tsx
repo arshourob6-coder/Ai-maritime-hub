@@ -106,7 +106,6 @@ import { OffshoreWindDashboardView } from './components/OffshoreWindDashboardVie
 import { SuperEcosystemMasterView } from './components/SuperEcosystemMasterView';
 import { AiCareerPathPlannerView } from './components/AiCareerPathPlannerView';
 import { AiResearchLabView } from './components/AiResearchLabView';
-import { MaritimeResearchPlatformView } from './components/MaritimeResearchPlatformView';
 import { SmartEcosystemModulesView } from './components/SmartEcosystemModulesView';
 
 // Additional tools
@@ -488,7 +487,7 @@ export default function App() {
           <AiCareerPathPlannerView userPlan={userPlan} onOpenPricing={openPricingModal} onSelectView={setCurrentView} />
         )}
         {currentView === 'ai_research_lab' && (
-          <MaritimeResearchPlatformView userPlan={userPlan} onOpenPricing={openPricingModal} onSelectView={setCurrentView} />
+          <AiResearchLabView userPlan={userPlan} onOpenPricing={openPricingModal} onSelectView={setCurrentView} />
         )}
         {[
           'smart_shipyard',
