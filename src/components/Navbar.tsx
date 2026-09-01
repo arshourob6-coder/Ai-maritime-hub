@@ -31,7 +31,8 @@ import {
   CheckCircle2,
   Award,
   Bell,
-  Newspaper
+  Newspaper,
+  FileText
 } from 'lucide-react';
 
 interface NavbarProps {
@@ -117,6 +118,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       view: 'ai_copilot' as ViewMode,
       icon: <Bot className="w-4 h-4 text-cyan-400" />,
       items: [
+        { id: 'document_hub', label: 'Document Converter & Hub', desc: '20+ format converter, OCR & AI summarizer suite', badge: 'POPULAR', icon: <FileText className="w-4 h-4 text-emerald-400" /> },
         { id: 'ai_agent_marketplace', label: 'AI Agent Marketplace', desc: 'Browse, build & monetize 2,400+ maritime AI agents', badge: 'STORE', icon: <Bot className="w-4 h-4 text-violet-400" /> },
         { id: 'ai_chat', label: 'AI Chat (Naval Arch)', desc: 'Multi-model naval engineering conversation', badge: 'PRO', icon: <Bot className="w-4 h-4 text-cyan-400" /> },
         { id: 'maritime_super_app', label: 'Maritime AI Super-App', desc: 'Pre-configured specialized tools & solvers', icon: <Sparkles className="w-4 h-4 text-blue-400" /> },
@@ -200,6 +202,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       view: 'research_lab' as ViewMode,
       icon: <FileCode2 className="w-4 h-4 text-pink-400" />,
       items: [
+        { id: 'document_hub', label: 'Document & Thesis Converter', desc: 'Convert, OCR & format theses, papers & IMO docs', badge: 'AI DOCS', icon: <FileText className="w-4 h-4 text-cyan-400" /> },
         { id: 'thesis_gen', label: 'Literature Review', desc: 'Automated synthesis across 50,000+ papers', icon: <FileCode2 className="w-4 h-4 text-purple-400" /> },
         { id: 'thesis_gen', label: 'Thesis Assistant', desc: 'Full dissertation generator & LaTeX export', icon: <FileSpreadsheet className="w-4 h-4 text-pink-400" /> },
         { id: 'maritime_publishing_platform', label: 'Journal Finder', desc: 'Match manuscript to Ocean Engineering journals', icon: <BookOpen className="w-4 h-4 text-amber-400" /> },

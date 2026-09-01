@@ -26,7 +26,8 @@ import {
   HelpCircle,
   LogOut,
   Sliders,
-  UserCheck
+  UserCheck,
+  FileText
 } from 'lucide-react';
 
 interface LeftSidebarWorkspaceProps {
@@ -57,6 +58,7 @@ export const LeftSidebarWorkspace: React.FC<LeftSidebarWorkspaceProps> = ({
   // Main Workspace Menu Items
   const workspaceItems = [
     { id: 'dashboard', label: 'Overview & Workspace', view: 'dashboard' as ViewMode, icon: <LayoutDashboard className="w-4 h-4" /> },
+    { id: 'doc_converter', label: 'Document Converter & Hub', view: 'document_hub' as ViewMode, icon: <FileText className="w-4 h-4 text-cyan-400" /> },
     { id: 'projects', label: 'My Projects (6 Active)', view: 'collaboration_ws' as ViewMode, icon: <FolderGit2 className="w-4 h-4 text-sky-400" /> },
     { id: 'agents', label: 'My AI Agents & Custom Bots', view: 'ai_assistant_builder' as ViewMode, icon: <Bot className="w-4 h-4 text-cyan-400" /> },
     { id: 'resources', label: 'Saved Resources & Bookmarks', view: 'maritime_digital_library' as ViewMode, icon: <Bookmark className="w-4 h-4 text-amber-400" /> },
@@ -67,6 +69,7 @@ export const LeftSidebarWorkspace: React.FC<LeftSidebarWorkspaceProps> = ({
   // 11 Core Navigation Hubs for quick access
   const coreHubs = [
     { id: 'home', label: 'Home Hub', view: 'landing' as ViewMode, icon: <Ship className="w-4 h-4 text-sky-400" /> },
+    { id: 'doc_converter', label: 'Document Processing Hub', view: 'document_hub' as ViewMode, icon: <FileText className="w-4 h-4 text-emerald-400" /> },
     { id: 'ai_copilot', label: 'AI Copilot Suite', view: 'ai_copilot' as ViewMode, icon: <Bot className="w-4 h-4 text-cyan-400" /> },
     { id: 'engineering_tools', label: 'Engineering Tools', view: 'engineering_tools' as ViewMode, icon: <Calculator className="w-4 h-4 text-indigo-400" /> },
     { id: 'simulation_center', label: 'Simulation Center', view: 'simulation_center' as ViewMode, icon: <Compass className="w-4 h-4 text-emerald-400" /> },

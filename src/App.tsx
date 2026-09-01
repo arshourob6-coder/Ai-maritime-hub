@@ -122,6 +122,7 @@ import { ScholarshipPortalView } from './components/ScholarshipPortalView';
 import { UniversityPortalView } from './components/UniversityPortalView';
 import { InternshipPortalView } from './components/InternshipPortalView';
 import { AIVoiceAssistantModal } from './components/AIVoiceAssistantModal';
+import { DocumentHubView } from './components/document_hub/DocumentHubView';
 
 // SaaS UI/UX Design System Components
 import { LeftSidebarWorkspace } from './components/LeftSidebarWorkspace';
@@ -519,6 +520,14 @@ export default function App() {
         )}
 
         {/* Additional Tools */}
+        {(currentView === 'document_hub' || currentView === 'doc_converter') && (
+          <DocumentHubView
+            userPlan={userPlan}
+            currency={currency}
+            onSetCurrency={setCurrency}
+            onOpenCheckoutModal={(plan) => openPricingModal(plan || 'pro_plus')}
+          />
+        )}
         {currentView === 'ais_tracking' && <AISTrackingView />}
         {currentView === 'compliance' && <ComplianceCenterView />}
         {currentView === 'class_society' && <ClassSocietyHubView />}

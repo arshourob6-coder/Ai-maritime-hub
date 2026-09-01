@@ -87,13 +87,14 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   let baseMonthlyPrice = priceUSD;
   if (selectedPlan === 'student') baseMonthlyPrice = 19;
   else if (selectedPlan === 'professional') baseMonthlyPrice = 49;
+  else if (selectedPlan === 'pro_plus') baseMonthlyPrice = 79;
   else if (selectedPlan === 'enterprise') baseMonthlyPrice = 199;
   else if (selectedPlan === 'university') baseMonthlyPrice = 499;
   else if (selectedPlan === 'free') baseMonthlyPrice = 0;
 
   // Yearly pricing gets ~30% discount
   const rawSubtotalUSD = billingPeriod === 'yearly'
-    ? (selectedPlan === 'student' ? 149 : selectedPlan === 'professional' ? 399 : selectedPlan === 'enterprise' ? 1590 : selectedPlan === 'university' ? 3990 : priceUSD)
+    ? (selectedPlan === 'student' ? 149 : selectedPlan === 'professional' ? 399 : selectedPlan === 'pro_plus' ? 699 : selectedPlan === 'enterprise' ? 1590 : selectedPlan === 'university' ? 3990 : priceUSD)
     : baseMonthlyPrice;
 
   // Coupon discount calculation

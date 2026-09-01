@@ -72,6 +72,7 @@ export const CommandPaletteModal: React.FC<CommandPaletteModalProps> = ({
     { id: 'hub_dash', title: 'User Dashboard', category: 'Hubs', view: 'dashboard', icon: <LayoutDashboard className="w-4 h-4 text-rose-400" />, description: 'Projects, AI usage, saved files, subscription' },
 
     // Top AI Tools
+    { id: 'tool_doc_hub', title: 'Document Converter & Document Processing Hub', category: 'AI Tools', view: 'document_hub', icon: <FileText className="w-4 h-4 text-emerald-400" />, badge: '20+ Tools', description: 'PDF to Word/Excel/PPT, OCR, AI Summarizer, Thesis formatting & IMO processor' },
     { id: 'tool_agent_marketplace', title: 'Maritime AI Agent Marketplace & Store', category: 'AI Tools', view: 'ai_agent_marketplace', icon: <Bot className="w-4 h-4 text-violet-400" />, badge: 'App Store', description: 'Discover, create, customize, and monetize 2,400+ specialized maritime AI agents' },
     { id: 'tool_news_intelligence', title: 'AI Maritime News & Intelligence Platform', category: 'AI Tools', view: 'maritime_news_intelligence', icon: <Newspaper className="w-4 h-4 text-emerald-400" />, badge: 'Bloomberg+AI', description: 'Real-time global shipping wire, IMO regulations, BDI freight indices, and AI analyst memos' },
     { id: 'tool_maritime_search', title: 'AI Maritime Search Engine (Google for Maritime)', category: 'AI Tools', view: 'ai_maritime_search', icon: <Search className="w-4 h-4 text-cyan-400" />, badge: 'Flagship Search', description: 'Semantic search across IMO, DNV, SNAME, 3D CADs, calculators & datasets' },

@@ -156,9 +156,11 @@ export type ViewMode =
   | 'maritime_super_wallet'
   | 'global_partnership_hub'
   | 'maritime_metaverse'
+  | 'doc_converter'
+  | 'document_hub'
   | 'saas_billing';
 
-export type PlanType = 'free' | 'student' | 'professional' | 'enterprise' | 'university';
+export type PlanType = 'free' | 'student' | 'professional' | 'pro_plus' | 'enterprise' | 'university';
 
 export type UserRole =
   | 'Guest'
