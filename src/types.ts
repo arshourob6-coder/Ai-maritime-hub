@@ -158,6 +158,7 @@ export type ViewMode =
   | 'maritime_metaverse'
   | 'doc_converter'
   | 'document_hub'
+  | 'regulatory_hub'
   | 'saas_billing';
 
 export type PlanType = 'free' | 'student' | 'professional' | 'pro_plus' | 'enterprise' | 'university';

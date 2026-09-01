@@ -58,6 +58,7 @@ export const LeftSidebarWorkspace: React.FC<LeftSidebarWorkspaceProps> = ({
   // Main Workspace Menu Items
   const workspaceItems = [
     { id: 'dashboard', label: 'Overview & Workspace', view: 'dashboard' as ViewMode, icon: <LayoutDashboard className="w-4 h-4" /> },
+    { id: 'regulatory_hub', label: 'IMO & Class Regulatory Hub', view: 'regulatory_hub' as ViewMode, icon: <ShieldAlert className="w-4 h-4 text-emerald-400" /> },
     { id: 'doc_converter', label: 'Document Converter & Hub', view: 'document_hub' as ViewMode, icon: <FileText className="w-4 h-4 text-cyan-400" /> },
     { id: 'projects', label: 'My Projects (6 Active)', view: 'collaboration_ws' as ViewMode, icon: <FolderGit2 className="w-4 h-4 text-sky-400" /> },
     { id: 'agents', label: 'My AI Agents & Custom Bots', view: 'ai_assistant_builder' as ViewMode, icon: <Bot className="w-4 h-4 text-cyan-400" /> },

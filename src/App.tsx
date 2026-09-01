@@ -123,6 +123,7 @@ import { UniversityPortalView } from './components/UniversityPortalView';
 import { InternshipPortalView } from './components/InternshipPortalView';
 import { AIVoiceAssistantModal } from './components/AIVoiceAssistantModal';
 import { DocumentHubView } from './components/document_hub/DocumentHubView';
+import { RegulatoryHubView } from './components/regulatory_hub/RegulatoryHubView';
 
 // SaaS UI/UX Design System Components
 import { LeftSidebarWorkspace } from './components/LeftSidebarWorkspace';
@@ -381,7 +382,9 @@ export default function App() {
         {currentView === 'ship_design_studio' && <ShipDesignStudioView userPlan={userPlan} onOpenPricing={openPricingModal} />}
         {currentView === 'digital_twin' && <DigitalTwinView />}
         {currentView === 'weather' && <MarineWeatherView />}
-        {currentView === 'maritime_regulations' && <MaritimeRegulationsView userPlan={userPlan} onOpenPricing={openPricingModal} />}
+        {(currentView === 'maritime_regulations' || currentView === 'regulatory_hub') && (
+          <RegulatoryHubView />
+        )}
         {currentView === 'marine_survey' && <MarineSurveyAssistantView />}
         {currentView === 'predictive_maint' && <PredictiveMaintView userPlan={userPlan} onOpenPricing={openPricingModal} />}
         {currentView === 'carbon_emissions' && <CarbonEmissionsView />}
