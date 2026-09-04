@@ -20,18 +20,31 @@ import {
 
 interface MobileBottomNavProps {
   currentView: ViewMode;
-  onNavigate: (view: ViewMode) => void;
-  onOpenSearch: () => void;
-  onOpenPricing: () => void;
+  onNavigate?: (view: ViewMode) => void;
+  onSelectView?: (view: ViewMode) => void;
+  onOpenSearch?: () => void;
+  onOpenCommandPalette?: () => void;
+  onOpenPricing?: () => void;
+  onOpenVoiceAssistant?: () => void;
+  onOpenAuthModal?: () => void;
+  isLoggedIn?: boolean;
 }
 
 export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
   currentView,
   onNavigate,
+  onSelectView,
   onOpenSearch,
-  onOpenPricing
+  onOpenCommandPalette,
+  onOpenPricing,
+  onOpenVoiceAssistant,
+  onOpenAuthModal,
+  isLoggedIn = false
 }) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const navigate = onSelectView || onNavigate || (() => {});
+  const openSearch = onOpenCommandPalette || onOpenSearch || (() => {});
+  const openPricing = onOpenPricing || (() => {});
 
   const primaryTabs = [
     { id: 'home', label: 'Home', view: 'landing' as ViewMode, icon: <Globe className="w-5 h-5" /> },
@@ -56,7 +69,7 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
   ];
 
   const handleSelect = (view: ViewMode) => {
-    onNavigate(view);
+    navigate(view);
     setDrawerOpen(false);
   };
 
@@ -142,7 +155,7 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
               <button
                 onClick={() => {
                   setDrawerOpen(false);
-                  onOpenSearch();
+                  openSearch();
                 }}
                 className="flex items-center justify-center gap-2 py-2.5 px-3 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-semibold"
               >
@@ -152,7 +165,7 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
               <button
                 onClick={() => {
                   setDrawerOpen(false);
-                  onOpenPricing();
+                  openPricing();
                 }}
                 className="flex items-center justify-center gap-2 py-2.5 px-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-xl text-xs font-semibold"
               >

@@ -170,7 +170,7 @@ export const BladePerformanceAnalysis: React.FC<BladePerformanceAnalysisProps> =
   // Radial Thrust Distribution Data across stations 0.2R to 1.0R
   const radialLoadingData = useMemo(() => {
     return radialGeometry.map((sec) => {
-      const r_R = sec.radiusFraction;
+      const r_R = sec.rRatio;
       const localJ = activeJ * (r_R / 0.7);
       const localChord = (Math.PI * diameterM * expandedAreaRatio) / (numBlades * 1.5) * (1 - Math.pow(r_R - 0.7, 2));
       
@@ -184,7 +184,7 @@ export const BladePerformanceAnalysis: React.FC<BladePerformanceAnalysisProps> =
 
       return {
         r_R: Number(r_R.toFixed(2)),
-        radiusM: Number((sec.radiusFraction * (diameterM / 2)).toFixed(3)),
+        radiusM: Number((sec.rRatio * (diameterM / 2)).toFixed(3)),
         chordM: Number(localChord.toFixed(3)),
         dKT_dr: Number(dKT_dr.toFixed(3)),
         dKQ_dr: Number((dKQ_dr * 10).toFixed(3)),

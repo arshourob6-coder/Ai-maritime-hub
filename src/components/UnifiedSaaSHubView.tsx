@@ -52,19 +52,27 @@ interface UnifiedSaaSHubViewProps {
     | 'maritime_industry'
     | 'community'
     | 'dashboard';
-  currentPlan: PlanType;
-  currency: Currency;
-  onNavigate: (view: ViewMode) => void;
-  onOpenPricing: () => void;
+  userPlan?: PlanType;
+  currentPlan?: PlanType;
+  currency?: Currency;
+  onNavigateView?: (view: ViewMode) => void;
+  onNavigate?: (view: ViewMode) => void;
+  onOpenPricing?: (plan?: any) => void;
+  isDarkMode?: boolean;
 }
 
 export const UnifiedSaaSHubView: React.FC<UnifiedSaaSHubViewProps> = ({
   hubId,
+  userPlan = 'student',
   currentPlan,
-  currency,
+  currency = 'USD',
+  onNavigateView,
   onNavigate,
   onOpenPricing,
+  isDarkMode = true,
 }) => {
+  const activePlan = currentPlan || userPlan;
+  const navigate = onNavigateView || onNavigate || (() => {});
   // Hub Metadata & Config
   const hubConfigs = {
     home: {
@@ -325,28 +333,28 @@ export const UnifiedSaaSHubView: React.FC<UnifiedSaaSHubViewProps> = ({
 
       // Knowledge Hub
       case 'digital_library':
-        onNavigate('maritime_digital_library');
+        navigate('maritime_digital_library');
         break;
       case 'research_papers':
-        onNavigate('maritime_publishing_platform');
+        navigate('digital_library');
         break;
       case 'imo_regulations':
-        onNavigate('maritime_regulations');
+        navigate('maritime_regulations');
         break;
       case 'class_rules':
-        onNavigate('class_society');
+        navigate('class_society');
         break;
       case 'engineering_standards':
-        onNavigate('compliance');
+        navigate('compliance');
         break;
       case 'thesis_repository':
-        onNavigate('digital_library');
+        navigate('digital_library');
         break;
       case 'video_learning':
-        onNavigate('video_learning');
+        navigate('video_learning');
         break;
       case 'formula_database':
-        onNavigate('formula_library');
+        navigate('formula_library');
         break;
 
       // Learning Academy
@@ -354,16 +362,16 @@ export const UnifiedSaaSHubView: React.FC<UnifiedSaaSHubViewProps> = ({
       case 'learning_paths':
       case 'quizzes':
       case 'student_progress':
-        onNavigate('learning');
+        navigate('learning');
         break;
       case 'certifications':
-        onNavigate('certifications');
+        navigate('certifications');
         break;
       case 'ai_tutor':
-        onNavigate('ai_exam_prep');
+        navigate('ai_exam_prep');
         break;
       case 'instructor_dashboard':
-        onNavigate('university_portal');
+        navigate('universities');
         break;
 
       // Research Lab
@@ -437,7 +445,7 @@ export const UnifiedSaaSHubView: React.FC<UnifiedSaaSHubViewProps> = ({
         onNavigate('dashboard');
         break;
       case 'subscription_status':
-        onNavigate('saas_billing');
+        navigate('dashboard');
         break;
 
       default:

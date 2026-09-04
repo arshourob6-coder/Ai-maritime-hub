@@ -828,7 +828,7 @@ ${designResults.steps.map((s) => `Step ${s.stepNumber} [${s.title}]: ${s.value} 
                 <div className="text-2xl font-black text-white">$199 <span className="text-xs font-normal text-slate-400">/mo</span></div>
                 <p className="text-slate-400">Commercial projects, 3D CAD STL/STEP export, CFD cavitation maps & CNC offsets.</p>
                 <button
-                  onClick={() => onOpenPricing?.('pro')}
+                  onClick={() => onOpenPricing?.('professional')}
                   className="w-full py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold transition"
                 >
                   Upgrade to Pro

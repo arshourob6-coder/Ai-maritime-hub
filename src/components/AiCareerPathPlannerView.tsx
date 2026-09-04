@@ -595,7 +595,7 @@ export const AiCareerPathPlannerView: React.FC<Props> = ({
               </div>
 
               <button
-                onClick={() => onSelectView && onSelectView('job_board')}
+                onClick={() => onSelectView && onSelectView('jobs')}
                 className="w-full py-2.5 bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-extrabold text-xs rounded-xl shadow-lg transition flex items-center justify-center gap-1.5"
               >
                 Apply with AI Hub Profile <ArrowRight className="w-3.5 h-3.5" />

@@ -175,6 +175,7 @@ export type CalculatorCategory =
 export const VESSEL_PRESETS = [
   {
     name: 'Panamax Bulk Carrier (75,000 DWT)',
+    type: 'Bulk Carrier',
     lengthBP: 220,
     beam: 32.2,
     draft: 12.2,
@@ -187,6 +188,7 @@ export const VESSEL_PRESETS = [
   },
   {
     name: 'Ultra Large Container Vessel (18,000 TEU)',
+    type: 'Container Vessel',
     lengthBP: 380,
     beam: 58.6,
     draft: 15.5,
@@ -199,6 +201,7 @@ export const VESSEL_PRESETS = [
   },
   {
     name: 'VLCC Oil Tanker (300,000 DWT)',
+    type: 'Oil Tanker',
     lengthBP: 320,
     beam: 60.0,
     draft: 20.5,
@@ -211,6 +214,7 @@ export const VESSEL_PRESETS = [
   },
   {
     name: 'Offshore Wind Installation Vessel',
+    type: 'Offshore Vessel',
     lengthBP: 150,
     beam: 45.0,
     draft: 6.5,

@@ -32,7 +32,10 @@ import {
 interface CommandPaletteModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onNavigate: (view: ViewMode) => void;
+  onNavigate?: (view: ViewMode) => void;
+  onSelectView?: (view: ViewMode) => void;
+  onSelectPromptForChat?: (prompt: any) => void;
+  userPlan?: PlanType;
   onOpenPricing?: () => void;
 }
 
@@ -51,11 +54,15 @@ export const CommandPaletteModal: React.FC<CommandPaletteModalProps> = ({
   isOpen,
   onClose,
   onNavigate,
+  onSelectView,
+  onSelectPromptForChat,
+  userPlan,
   onOpenPricing
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
+  const navigate = onSelectView || onNavigate || (() => {});
 
   const commandItems: CommandItem[] = [
     // 11 Main Hubs
@@ -140,7 +147,7 @@ export const CommandPaletteModal: React.FC<CommandPaletteModalProps> = ({
   };
 
   const handleSelectItem = (item: CommandItem) => {
-    onNavigate(item.view);
+    navigate(item.view);
     onClose();
   };
 

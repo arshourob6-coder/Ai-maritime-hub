@@ -51,7 +51,8 @@ export const DocumentHubView: React.FC<DocumentHubViewProps> = ({
       status: 'completed',
       progress: 100,
       timestamp: 'Today at 09:42 AM',
-      downloadUrl: '#'
+      downloadUrl: '#',
+      autoDeleteInHours: 24
     },
     {
       id: 'job-102',
@@ -63,7 +64,8 @@ export const DocumentHubView: React.FC<DocumentHubViewProps> = ({
       status: 'completed',
       progress: 100,
       timestamp: 'Today at 08:15 AM',
-      downloadUrl: '#'
+      downloadUrl: '#',
+      autoDeleteInHours: 24
     },
     {
       id: 'job-103',
@@ -75,7 +77,8 @@ export const DocumentHubView: React.FC<DocumentHubViewProps> = ({
       status: 'completed',
       progress: 100,
       timestamp: 'Yesterday at 04:30 PM',
-      downloadUrl: '#'
+      downloadUrl: '#',
+      autoDeleteInHours: 24
     }
   ]);
 
@@ -185,7 +188,7 @@ export const DocumentHubView: React.FC<DocumentHubViewProps> = ({
             userPlan={userPlan}
             currency={currency}
             onOpenPricing={() => setActiveTab('pricing')}
-            onJobComplete={handleJobCreated}
+            onJobCompleted={handleJobCreated}
           />
         )}
 

@@ -176,21 +176,21 @@ export interface StatutoryCertificateItem {
 }
 
 export interface ShipComplianceProfile {
-  vesselName: string;
-  imoNumber: string;
-  shipType: 'Bulk Carrier' | 'Oil Tanker' | 'Chemical Tanker' | 'Container Ship' | 'Gas Carrier (LNG/LPG)' | 'General Cargo' | 'Passenger / Cruise' | 'Offshore Support Vessel' | 'Tug / Workboat';
+  vesselName?: string;
+  imoNumber?: string;
+  shipType: 'Bulk Carrier' | 'Oil Tanker' | 'Chemical Tanker' | 'Container Ship' | 'Gas Carrier (LNG/LPG)' | 'General Cargo' | 'Passenger / Cruise' | 'Offshore Support Vessel' | 'Tug / Workboat' | string;
   grossTonnage: number;
-  deadweightTonnage: number;
+  deadweightTonnage?: number;
   flagState: string;
-  classSociety: string;
+  classSociety?: string;
   yearBuilt: number;
-  keelLaidDate: string;
+  keelLaidDate?: string;
   cargoType: string;
-  tradingArea: 'Worldwide (Unrestricted)' | 'Polar Waters (Arctic/Antarctic)' | 'ECA Zones (Baltic / North Sea / US-Canada)' | 'Coastal / Domestic' | 'Inland Waterways';
-  propulsionType: '2-Stroke Diesel' | '4-Stroke Medium Speed' | 'Dual-Fuel LNG' | 'Methanol Fuelled' | 'Battery Hybrid' | 'Diesel-Electric';
-  hasScrubberEGCS: boolean;
-  hasBWTS: boolean;
-  hasShaftPowerLimitation: boolean;
+  tradingArea: 'Worldwide (Unrestricted)' | 'Polar Waters (Arctic/Antarctic)' | 'ECA Zones (Baltic / North Sea / US-Canada)' | 'Coastal / Domestic' | 'Inland Waterways' | string;
+  propulsionType: '2-Stroke Diesel' | '4-Stroke Medium Speed' | 'Dual-Fuel LNG' | 'Methanol Fuelled' | 'Battery Hybrid' | 'Diesel-Electric' | string;
+  hasScrubberEGCS?: boolean;
+  hasBWTS?: boolean;
+  hasShaftPowerLimitation?: boolean;
 }
 
 export interface RegItemMatrix {

@@ -47,7 +47,7 @@ import {
   Share2,
   Award,
   TrendingUp,
-  Map,
+  Map as MapIcon,
   Cpu,
   Radio,
   Database,
@@ -328,7 +328,7 @@ export const LeftSidebarWorkspace: React.FC<LeftSidebarWorkspaceProps> = ({
               { id: 'ais_tracking', label: 'Real-Time AIS Vessel Radar', view: 'ais_tracking', icon: <Radar className="w-3.5 h-3.5 text-emerald-400" />, badge: 'Satellite' },
               { id: 'weather', label: 'Marine Weather & Sea State', view: 'weather', icon: <Waves className="w-3.5 h-3.5 text-sky-400" /> },
               { id: 'voyage_planning', label: 'Voyage Planning & Weather Routing', view: 'voyage_planning', icon: <Compass className="w-3.5 h-3.5 text-cyan-400" /> },
-              { id: 'maritime_gis', label: 'Maritime GIS & Nav Charts', view: 'maritime_gis', icon: <Map className="w-3.5 h-3.5 text-emerald-400" /> }
+              { id: 'maritime_gis', label: 'Maritime GIS & Nav Charts', view: 'maritime_gis', icon: <MapIcon className="w-3.5 h-3.5 text-emerald-400" /> }
             ]
           },
           {

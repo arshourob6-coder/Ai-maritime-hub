@@ -5,6 +5,10 @@ import { Sparkles, ShieldCheck, Crown, Zap, ArrowRight, CheckCircle2 } from 'luc
 interface SubscriptionBannerProps {
   userPlan?: PlanType | string;
   onOpenPricing?: (plan?: PlanType) => void;
+  onUpgrade?: () => void;
+  badge?: string;
+  title?: string;
+  subtitle?: string;
   compact?: boolean;
   featureName?: string;
 }
@@ -12,9 +16,20 @@ interface SubscriptionBannerProps {
 export const SubscriptionBanner: React.FC<SubscriptionBannerProps> = ({
   userPlan = 'student',
   onOpenPricing,
+  onUpgrade,
+  badge,
+  title,
+  subtitle,
   compact = false,
   featureName
 }) => {
+  const handleUpgrade = () => {
+    if (onUpgrade) {
+      onUpgrade();
+    } else if (onOpenPricing) {
+      onOpenPricing(userPlan === 'enterprise' ? 'enterprise' : 'professional');
+    }
+  };
   const getPlanDetails = (plan?: PlanType | string) => {
     switch (plan) {
       case 'enterprise':
@@ -84,7 +99,7 @@ export const SubscriptionBanner: React.FC<SubscriptionBannerProps> = ({
           <div className="flex items-center gap-2 flex-wrap">
             <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black border flex items-center gap-1 ${details.badgeBg}`}>
               {details.icon}
-              <span>Active Subscription: {details.label}</span>
+              <span>{badge || `Active Subscription: ${details.label}`}</span>
             </span>
             {featureName && (
               <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
@@ -94,23 +109,25 @@ export const SubscriptionBanner: React.FC<SubscriptionBannerProps> = ({
           </div>
 
           <h4 className="text-sm sm:text-base font-black text-white">
-            Need higher quota or enterprise tools? <span className="text-sky-400">Upgrade your subscription anytime.</span>
+            {title || (
+              <>Need higher quota or enterprise tools? <span className="text-sky-400">Upgrade your subscription anytime.</span></>
+            )}
           </h4>
 
           <p className="text-slate-300 leading-relaxed text-[11px]">
-            {details.perk}. Switch between Student ($8/mo), Professional ($25/mo), or Enterprise ($99/mo) plans with 100% money-back guarantee.
+            {subtitle || `${details.perk}. Switch between Student ($8/mo), Professional ($25/mo), or Enterprise ($99/mo) plans with 100% money-back guarantee.`}
           </p>
         </div>
 
         <div className="flex items-center gap-3 shrink-0 w-full md:w-auto justify-end">
           <button
-            onClick={() => onOpenPricing && onOpenPricing('student')}
+            onClick={() => onOpenPricing ? onOpenPricing('student') : handleUpgrade()}
             className="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold rounded-xl transition text-[11px]"
           >
             Student ($8/mo)
           </button>
           <button
-            onClick={() => onOpenPricing && onOpenPricing('professional')}
+            onClick={handleUpgrade}
             className="px-4 py-2 bg-gradient-to-r from-sky-500 to-indigo-500 hover:from-sky-400 hover:to-indigo-400 text-slate-950 font-black rounded-xl transition shadow-lg text-xs flex items-center gap-1.5"
           >
             <Sparkles className="w-4 h-4 text-slate-950" />

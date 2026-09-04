@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ViewMode, PlanType, Currency } from './types';
 import { LanguageProvider } from './lib/i18n';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { WaveCanvas } from './components/WaveCanvas';
@@ -151,9 +152,13 @@ export default function App() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  // Mandatory Authentication Gateway State
+  // Mandatory Authentication Gateway State with SSR/browser safety
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(() => {
-    return localStorage.getItem('mh_logged_in') === 'true';
+    try {
+      return typeof window !== 'undefined' && localStorage.getItem('mh_logged_in') === 'true';
+    } catch {
+      return false;
+    }
   });
   const [authGateMessage, setAuthGateMessage] = useState<string | null>(null);
   const [authInitialTab, setAuthInitialTab] = useState<
@@ -255,7 +260,8 @@ export default function App() {
 
         {/* Primary View Router */}
         <main className="flex-1 min-w-0 pb-20 md:pb-0 overflow-x-hidden">
-          {/* 11 Main SaaS Hub Centralized Layouts */}
+          <ErrorBoundary>
+            {/* 11 Main SaaS Hub Centralized Layouts */}
           {currentView === 'ai_copilot' && (
             <UnifiedSaaSHubView
               hubId="ai_copilot"
@@ -468,14 +474,14 @@ export default function App() {
           currentView === 'industry_reports' ||
           currentView === 'saas_app_store' ||
           currentView === 'dtaas_platform') && (
-          <MonetizationSuiteView userPlan={userPlan} onOpenPricing={openPricingModal} onSelectView={setCurrentView} />
+          <MonetizationSuiteView userPlan={userPlan} onOpenPricing={openPricingModal} onSelectView={(v) => setCurrentView(v as ViewMode)} />
         )}
 
         {currentView === 'maritime_digital_library' && (
           <MaritimeDigitalLibraryView userPlan={userPlan} onOpenPricing={openPricingModal} onSelectView={setCurrentView} />
         )}
         {currentView === 'maritime_simulation_center' && (
-          <MaritimeSimulationCenterView userPlan={userPlan} onOpenPricing={openPricingModal} onSelectView={setCurrentView} />
+          <MaritimeSimulationCenterView userPlan={userPlan} onOpenPricing={openPricingModal} onSelectView={(v) => setCurrentView(v as ViewMode)} />
         )}
         {currentView === 'offshore_wind_dashboard' && (
           <OffshoreWindDashboardView userPlan={userPlan} onOpenPricing={openPricingModal} onSelectView={setCurrentView} />
@@ -518,7 +524,7 @@ export default function App() {
           />
         )}
         {currentView === 'sponsored_listings' && (
-          <SponsoredListingsView userPlan={userPlan} onOpenPricing={openPricingModal} onSelectView={setCurrentView} />
+          <SponsoredListingsView userPlan={userPlan} onOpenPricing={openPricingModal} onSelectView={(v) => setCurrentView(v as ViewMode)} />
         )}
 
         {/* Additional Tools */}
@@ -541,7 +547,8 @@ export default function App() {
         {currentView === 'scholarships' && <ScholarshipPortalView />}
         {currentView === 'universities' && <UniversityPortalView />}
         {currentView === 'internships' && <InternshipPortalView />}
-      </main>
+          </ErrorBoundary>
+        </main>
       </div>
 
       {/* Universal Footer */}

@@ -1680,7 +1680,7 @@ export const ShipResistancePoweringView: React.FC<Props> = ({ userPlan = 'studen
                 <li>• AI Pareto Optimization</li>
                 <li>• Unlimited project exports</li>
               </ul>
-              <button onClick={() => onOpenPricing?.('pro')} className="w-full py-2 bg-purple-600 hover:bg-purple-500 text-white font-bold rounded-xl transition cursor-pointer">Upgrade to Pro</button>
+              <button onClick={() => onOpenPricing?.('professional')} className="w-full py-2 bg-purple-600 hover:bg-purple-500 text-white font-bold rounded-xl transition cursor-pointer">Upgrade to Pro</button>
             </div>
 
             <div className="p-5 bg-slate-950 rounded-2xl border border-emerald-500/40 space-y-4">
@@ -1691,7 +1691,7 @@ export const ShipResistancePoweringView: React.FC<Props> = ({ userPlan = 'studen
                 <li>• API & ERP integration</li>
                 <li>• Custom shipyard branding</li>
               </ul>
-              <button onClick={() => onOpenPricing?.('pro')} className="w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl transition cursor-pointer">Contact Enterprise</button>
+              <button onClick={() => onOpenPricing?.('enterprise')} className="w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl transition cursor-pointer">Contact Enterprise</button>
             </div>
           </div>
         </div>
@@ -1705,19 +1705,30 @@ export const ShipResistancePoweringView: React.FC<Props> = ({ userPlan = 'studen
               activeCalc={{
                 id: 'ship-powering-calc',
                 name: 'Ship Power Calculation & Propulsion Analysis',
-                category: 'Naval Architecture & Hydrodynamics',
+                category: 'Powering & Propulsion',
                 description: 'Full 16-step hydrodynamic powering chain from towrope resistance RT to installed brake power PB (MCR), propulsive efficiencies, engine matching, and carbon emissions.',
                 formulaLaTeX: 'P_B = \\frac{R_T \\cdot V}{\\eta_H \\cdot \\eta_O \\cdot \\eta_R \\cdot \\eta_S \\cdot \\eta_M}',
                 formulaText: 'PB = (RT * V) / (etaH * etaO * etaR * etaS * etaM)',
                 derivation: 'Derived by integrating towrope effective power PE with quasi-propulsive efficiency etaD and mechanical transmission losses.',
                 inputs: [
-                  { id: 'lbp', label: 'LBP', defaultValueSI: lbp, siUnit: 'm', impUnit: 'ft', siToImp: v=>v*3.28084, impToSi: v=>v/3.28084, description: 'Length between perpendiculars' },
-                  { id: 'speed', label: 'Service Speed', defaultValueSI: serviceSpeed, siUnit: 'kn', impUnit: 'kn', siToImp: v=>v, impToSi: v=>v, description: 'Service design speed' }
-                ]
+                  { id: 'lbp', label: 'LBP', defaultValueSI: lbp, siUnit: 'm', impUnit: 'ft', siToImp: v=>v*3.28084, impToSi: v=>v/3.28084, step: 1, min: 10, max: 400, description: 'Length between perpendiculars' },
+                  { id: 'speed', label: 'Service Speed', defaultValueSI: serviceSpeed, siUnit: 'kn', impUnit: 'kn', siToImp: v=>v, impToSi: v=>v, step: 0.5, min: 1, max: 40, description: 'Service design speed' }
+                ],
+                calculate: () => ({ results: [], stepByStep: [] }),
+                assumptions: [],
+                limitations: [],
+                standards: [],
+                workedExample: {
+                  title: 'Panamax Bulk Carrier Powering',
+                  given: 'LBP = 220m, V = 14 knots, RT = 620 kN, etaD = 0.70',
+                  solution: 'PE = 4,465 kW -> PD = 6,379 kW -> PB (MCR with 15% sea margin) = 8,057 kW'
+                },
+                aiExplanation: 'Ship resistance and propulsion power chain following ITTC-1978 recommendations and Holtrop-Mennen empirical estimation.',
+                diagramType: 'resistance_curve'
               }}
               unitSystem="SI"
               inputState={{ lbp, speed: serviceSpeed }}
-              calcOutput={{ results: [{ label: 'Installed Brake Power (MCR)', valueSI: calc.InstalledMCR_kW, valueImp: calc.InstalledMCR_BHP, siUnit: 'kW', impUnit: 'BHP' }] }}
+              calcOutput={{ results: [{ label: 'Installed Brake Power (MCR)', valueSI: calc.InstalledMCR_kW, valueImp: calc.InstalledMCR_BHP, siUnit: 'kW', impUnit: 'BHP', formulaUsed: 'PB = PE / etaD' }] }}
               isOpen={isTutorOpen}
               onClose={() => setIsTutorOpen(false)}
               className="h-full shadow-2xl"
