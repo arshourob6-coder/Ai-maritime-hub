@@ -5,6 +5,7 @@ import { GlobalSearchModal } from './GlobalSearchModal';
 import { NavbarGlobalSearchBar } from './NavbarGlobalSearchBar';
 import { LanguageAccessibilityModal } from './LanguageAccessibilityModal';
 import { AllModulesCatalogModal } from './AllModulesCatalogModal';
+import { RightNavModulesDropdown } from './RightNavModulesDropdown';
 import { PRIMARY_NAVIGATION_HUBS, NavHub, NavGroup, NavItem } from '../data/navigationHubs';
 import {
   Ship,
@@ -338,7 +339,14 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Right Controls & Quick Actions */}
         <div className="flex items-center gap-2">
-          
+          {/* Categorized Modules Dropdown in Right Nav Bar */}
+          <RightNavModulesDropdown
+            currentView={currentView}
+            setView={setView}
+            isDarkMode={isDarkMode}
+            onOpenCatalogModal={() => setCatalogModalOpen(true)}
+          />
+
           {/* AI Copilot Highlighted Quick Action */}
           <button
             onClick={() => setView('ai_chat')}
