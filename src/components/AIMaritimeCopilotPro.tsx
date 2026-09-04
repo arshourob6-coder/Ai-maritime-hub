@@ -567,7 +567,8 @@ Ask any engineering calculation, upload stability booklets & drawings, draft cla
               className="bg-slate-900 border border-slate-700/80 rounded-xl px-2.5 py-1.5 text-xs text-white font-semibold focus:outline-none focus:border-sky-400 cursor-pointer"
             >
               <option value="auto-route">⚡ Auto Smart Router (Recommended)</option>
-              <option value="gemini-3.6-flash">Google Gemini 3.6 Flash (Deep Search)</option>
+              <option value="gemini-3.8-flash">Google Gemini 3.8 Flash (Primary Engine)</option>
+              <option value="gemini-3.6-flash">Google Gemini 3.6 Flash</option>
               <option value="gpt-4o">OpenAI GPT-4o (Maritime Logic)</option>
               <option value="claude-3.5-sonnet">Claude 3.5 Sonnet (Specs & Code)</option>
               <option value="deepseek-r1-maritime">DeepSeek R1 (Hydrodynamic Math)</option>

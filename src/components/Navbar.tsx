@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ViewMode, PlanType, Currency } from '../types';
 import { useLanguage, MARITIME_LANGUAGES } from '../lib/i18n';
 import { GlobalSearchModal } from './GlobalSearchModal';
 import { NavbarGlobalSearchBar } from './NavbarGlobalSearchBar';
 import { LanguageAccessibilityModal } from './LanguageAccessibilityModal';
+import { AllModulesCatalogModal } from './AllModulesCatalogModal';
+import { PRIMARY_NAVIGATION_HUBS, NavHub, NavGroup, NavItem } from '../data/navigationHubs';
 import {
   Ship,
   Bot,
@@ -32,7 +34,10 @@ import {
   Award,
   Bell,
   Newspaper,
-  FileText
+  FileText,
+  LayoutGrid,
+  ChevronDown,
+  ArrowRight
 } from 'lucide-react';
 
 interface NavbarProps {
@@ -94,185 +99,21 @@ export const Navbar: React.FC<NavbarProps> = ({
   }, []);
 
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [catalogModalOpen, setCatalogModalOpen] = useState(false);
+  const [mobileSearchQuery, setMobileSearchQuery] = useState('');
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // The 11 Core Navigation Structure with Sub-Tabs
-  const primaryNavigationHubs = [
-    {
-      id: 'home',
-      title: 'Home',
-      view: 'landing' as ViewMode,
-      icon: <Ship className="w-4 h-4 text-sky-400" />,
-      items: [
-        { id: 'landing', label: 'AI Maritime Hub Overview', desc: 'Main ecosystem & platform command center', icon: <Ship className="w-4 h-4 text-sky-400" /> },
-        { id: 'maritime_news_intelligence', label: 'AI News & Intelligence', desc: 'Bloomberg-grade real-time news & analyst engine', badge: 'LIVE', icon: <Newspaper className="w-4 h-4 text-cyan-400" /> },
-        { id: 'ai_super_app', label: 'Featured AI Tools', desc: 'Top naval architecture & commercial tools', icon: <Sparkles className="w-4 h-4 text-amber-400" /> },
-        { id: 'newsletter', label: 'Latest News & Dispatches', desc: 'Real-time global shipping & technology', icon: <Mail className="w-4 h-4 text-emerald-400" /> },
-        { id: 'maritime_publishing_platform', label: 'Trending Research', desc: '450+ Peer-reviewed maritime papers', icon: <BookOpen className="w-4 h-4 text-indigo-400" /> },
-        { id: 'community', label: 'Community Highlights', desc: '14,200+ Naval architects & students', icon: <Users className="w-4 h-4 text-purple-400" /> },
-        { id: 'saas_billing', label: 'Subscription CTA & Tiers', desc: '5 Flexible plans with 14-day trial', badge: 'PRO', icon: <DollarSign className="w-4 h-4 text-emerald-400" /> }
-      ]
-    },
-    {
-      id: 'ai_copilot',
-      title: 'AI Copilot',
-      view: 'ai_copilot' as ViewMode,
-      icon: <Bot className="w-4 h-4 text-cyan-400" />,
-      items: [
-        { id: 'document_hub', label: 'Document Converter & Hub', desc: '20+ format converter, OCR & AI summarizer suite', badge: 'POPULAR', icon: <FileText className="w-4 h-4 text-emerald-400" /> },
-        { id: 'ai_agent_marketplace', label: 'AI Agent Marketplace', desc: 'Browse, build & monetize 2,400+ maritime AI agents', badge: 'STORE', icon: <Bot className="w-4 h-4 text-violet-400" /> },
-        { id: 'ai_chat', label: 'AI Chat (Naval Arch)', desc: 'Multi-model naval engineering conversation', badge: 'PRO', icon: <Bot className="w-4 h-4 text-cyan-400" /> },
-        { id: 'maritime_super_app', label: 'Maritime AI Super-App', desc: 'Pre-configured specialized tools & solvers', icon: <Sparkles className="w-4 h-4 text-blue-400" /> },
-        { id: 'report_gen', label: 'Document & GA Analysis', desc: 'Automated survey, class & IHM audit', icon: <FileSpreadsheet className="w-4 h-4 text-emerald-400" /> },
-        { id: 'calculators', label: 'Engineering Assistant', desc: 'Instant hydrostatics & formulas', icon: <Calculator className="w-4 h-4 text-indigo-400" /> },
-        { id: 'thesis_gen', label: 'Research Assistant', desc: 'Thesis outline & APA/IEEE citations', icon: <FileCode2 className="w-4 h-4 text-purple-400" /> },
-        { id: 'report_gen', label: 'Report Generator', desc: 'Class survey & technical memos', icon: <Sparkles className="w-4 h-4 text-amber-400" /> },
-        { id: 'prompt_library', label: 'AI Prompt History & Library', desc: '100 Pre-engineered prompts', icon: <BookMarked className="w-4 h-4 text-sky-400" /> }
-      ]
-    },
-    {
-      id: 'engineering_tools',
-      title: 'Engineering Tools',
-      view: 'engineering_tools' as ViewMode,
-      icon: <Calculator className="w-4 h-4 text-indigo-400" />,
-      items: [
-        { id: 'ship_design_studio', label: 'Ship Design (3D)', desc: 'Parametric hull modeling & lines plan', badge: '3D', icon: <Ship className="w-4 h-4 text-sky-400" /> },
-        { id: 'naval_arch_lab', label: 'Hydrostatics & Bonjean', desc: 'Section curves & Simpson integration', icon: <Compass className="w-4 h-4 text-cyan-400" /> },
-        { id: 'ship_resistance', label: 'Resistance & Power', desc: 'Holtrop-Mennen & ITTC 1957 line', icon: <Calculator className="w-4 h-4 text-amber-400" /> },
-        { id: 'propeller_design', label: 'Propulsion & Blade FEA', desc: 'B-Series cavitation & pitch optimization', icon: <Compass className="w-4 h-4 text-emerald-400" /> },
-        { id: 'naval_arch_lab', label: 'Stability & GZ Curves', desc: 'IMO Res A.749 intact & damage check', icon: <ShieldAlert className="w-4 h-4 text-rose-400" /> },
-        { id: 'ship_structural', label: 'Structural Design & FEA', desc: 'Midship section modulus & DNV rules', icon: <ShieldAlert className="w-4 h-4 text-indigo-400" /> },
-        { id: 'offshore_renewables', label: 'Offshore Engineering', desc: 'Floating wind turbines & mooring', icon: <Sparkles className="w-4 h-4 text-blue-400" /> },
-        { id: 'predictive_maint', label: 'Marine Machinery & SFOC', desc: '2-Stroke & Dual Fuel engine telemetry', icon: <Sparkles className="w-4 h-4 text-cyan-400" /> },
-        { id: 'environmental_hub', label: 'Ship Recycling (HKC 2025)', desc: 'IHM Part I HazMat generator & audit', icon: <Compass className="w-4 h-4 text-emerald-400" /> },
-        { id: 'carbon_emissions', label: 'Environmental & CII Rating', desc: 'IMO MEPC 82 carbon intensity metrics', icon: <Sparkles className="w-4 h-4 text-teal-400" /> },
-        { id: 'calculators', label: 'Engineering Calculators', desc: '100+ formulas with instant derivation', icon: <Calculator className="w-4 h-4 text-teal-400" /> }
-      ]
-    },
-    {
-      id: 'simulation_center',
-      title: 'Simulation Center',
-      view: 'simulation_center' as ViewMode,
-      icon: <Compass className="w-4 h-4 text-emerald-400" />,
-      items: [
-        { id: 'maritime_simulation_center', label: 'Ship Simulator', desc: '6-DOF hydrodynamic motion simulator', badge: '3D', icon: <Ship className="w-4 h-4 text-sky-400" /> },
-        { id: 'maritime_simulation_center', label: 'Bridge Simulator', desc: 'Full-mission bridge with COLREGs radar', icon: <Compass className="w-4 h-4 text-cyan-400" /> },
-        { id: 'maritime_simulation_center', label: 'Engine Room Simulator', desc: 'MAN B&W 6S50ME SCADA console', icon: <Sparkles className="w-4 h-4 text-amber-400" /> },
-        { id: 'maritime_simulation_center', label: 'Stability Simulator', desc: 'Dynamic parametric roll & flooding', icon: <ShieldAlert className="w-4 h-4 text-rose-400" /> },
-        { id: 'cargo_planning', label: 'Cargo Simulator', desc: 'Bulk / Tanker stability & stress loading', icon: <FileSpreadsheet className="w-4 h-4 text-indigo-400" /> },
-        { id: 'maritime_gis', label: 'Port Operations Simulator', desc: 'Quay crane scheduling & TEU dispatch', icon: <Globe className="w-4 h-4 text-emerald-400" /> },
-        { id: 'offshore_wind_dashboard', label: 'Offshore Platform Simulator', desc: 'FPSO & semi-submersible motions', icon: <Sparkles className="w-4 h-4 text-blue-400" /> },
-        { id: 'digital_twin', label: 'Digital Twin & IoT', desc: 'Real-time telemetry & predictive sensors', icon: <Sparkles className="w-4 h-4 text-cyan-400" /> },
-        { id: 'maritime_metaverse', label: 'VR/AR Training', desc: 'Spatial 3D inspection & safety drills', icon: <Sparkles className="w-4 h-4 text-purple-400" /> }
-      ]
-    },
-    {
-      id: 'knowledge_hub',
-      title: 'Knowledge Hub',
-      view: 'knowledge_hub' as ViewMode,
-      icon: <BookOpen className="w-4 h-4 text-amber-400" />,
-      items: [
-        { id: 'maritime_digital_library', label: 'Digital Library', desc: '10,000+ textbooks, manuals & rulebooks', icon: <BookMarked className="w-4 h-4 text-sky-400" /> },
-        { id: 'maritime_publishing_platform', label: 'Research Papers', desc: 'IEEE, SNAME & RINA peer-reviewed index', icon: <BookOpen className="w-4 h-4 text-amber-400" /> },
-        { id: 'maritime_regulations', label: 'IMO Regulations (SOLAS/MARPOL)', desc: 'Full-text queryable conventions & codes', icon: <ShieldAlert className="w-4 h-4 text-emerald-400" /> },
-        { id: 'class_society', label: 'Class Rules', desc: 'DNV, ABS, Lloyd’s Register & BV rules', icon: <ShieldAlert className="w-4 h-4 text-rose-400" /> },
-        { id: 'compliance', label: 'Engineering Standards', desc: 'ISO, IACS & ASTM marine standards', icon: <CheckCircle2 className="w-4 h-4 text-cyan-400" /> },
-        { id: 'digital_library', label: 'Thesis Repository', desc: '1,200+ MSc & PhD naval arch dissertations', icon: <FileCode2 className="w-4 h-4 text-purple-400" /> },
-        { id: 'video_learning', label: 'Video Learning', desc: '4K video technical engineering masterclasses', icon: <Sparkles className="w-4 h-4 text-pink-400" /> },
-        { id: 'formula_library', label: 'Formula Database', desc: '500+ formulas with mathematical steps', icon: <Calculator className="w-4 h-4 text-teal-400" /> }
-      ]
-    },
-    {
-      id: 'learning_academy',
-      title: 'Learning Academy',
-      view: 'learning_academy' as ViewMode,
-      icon: <GraduationCap className="w-4 h-4 text-purple-400" />,
-      items: [
-        { id: 'learning', label: 'Accredited Courses', desc: 'Naval architecture, STCW & hydrodynamics', icon: <GraduationCap className="w-4 h-4 text-purple-400" /> },
-        { id: 'certifications', label: 'Certifications', desc: 'CPD accredited blockchain verify certificates', badge: 'QR Cert', icon: <Sparkles className="w-4 h-4 text-amber-400" /> },
-        { id: 'ai_career_path_planner', label: 'Learning Paths', desc: 'Structured cadet to chief architect pathways', icon: <Compass className="w-4 h-4 text-cyan-400" /> },
-        { id: 'ai_exam_prep', label: 'Quizzes & Exam Prep', desc: '1,500+ MCQs & Class surveyor mock tests', icon: <Calculator className="w-4 h-4 text-emerald-400" /> },
-        { id: 'ai_chat', label: 'AI Tutor', desc: '24/7 interactive voice & text engineering coach', icon: <Bot className="w-4 h-4 text-blue-400" /> },
-        { id: 'learning', label: 'Student Progress', desc: 'Progress rings, badges & LMS sync', icon: <Users className="w-4 h-4 text-pink-400" /> },
-        { id: 'university_portal', label: 'Instructor Dashboard', desc: 'Faculty grading & course management', icon: <BookOpen className="w-4 h-4 text-indigo-400" /> }
-      ]
-    },
-    {
-      id: 'research_lab',
-      title: 'Research Lab',
-      view: 'research_lab' as ViewMode,
-      icon: <FileCode2 className="w-4 h-4 text-pink-400" />,
-      items: [
-        { id: 'document_hub', label: 'Document & Thesis Converter', desc: 'Convert, OCR & format theses, papers & IMO docs', badge: 'AI DOCS', icon: <FileText className="w-4 h-4 text-cyan-400" /> },
-        { id: 'thesis_gen', label: 'Literature Review', desc: 'Automated synthesis across 50,000+ papers', icon: <FileCode2 className="w-4 h-4 text-purple-400" /> },
-        { id: 'thesis_gen', label: 'Thesis Assistant', desc: 'Full dissertation generator & LaTeX export', icon: <FileSpreadsheet className="w-4 h-4 text-pink-400" /> },
-        { id: 'maritime_publishing_platform', label: 'Journal Finder', desc: 'Match manuscript to Ocean Engineering journals', icon: <BookOpen className="w-4 h-4 text-amber-400" /> },
-        { id: 'maritime_data_center', label: 'Data Analysis', desc: 'Hydrodynamic towing tank & CFD data tools', icon: <Calculator className="w-4 h-4 text-cyan-400" /> },
-        { id: 'ai_research_lab', label: 'Citation Manager', desc: 'BibTeX, APA 7, IEEE & Chicago formatting', icon: <BookMarked className="w-4 h-4 text-emerald-400" /> },
-        { id: 'collaboration_ws', label: 'Research Collaboration', desc: 'Multi-author paper drafts & shared notes', icon: <Users className="w-4 h-4 text-blue-400" /> }
-      ]
-    },
-    {
-      id: 'marketplace',
-      title: 'Marketplace',
-      view: 'marketplace' as ViewMode,
-      icon: <Store className="w-4 h-4 text-teal-400" />,
-      items: [
-        { id: 'ai_agent_marketplace', label: 'AI Agent Store & Creator Studio', desc: 'Discover, deploy & monetize 2,400+ maritime AI agents', badge: 'NEW', icon: <Bot className="w-4 h-4 text-violet-400" /> },
-        { id: 'marketplace', label: 'Engineering Templates', desc: 'Excel, Mathcad & Python calculation sheets', icon: <FileSpreadsheet className="w-4 h-4 text-emerald-400" /> },
-        { id: 'marketplace', label: 'CAD Files & 3D Hulls', desc: 'IGES, STEP, Rhino & Maxsurf geometries', icon: <Ship className="w-4 h-4 text-sky-400" /> },
-        { id: 'marketplace', label: 'Reports & Whitepapers', desc: 'Decarbonization & market forecast studies', icon: <BookOpen className="w-4 h-4 text-amber-400" /> },
-        { id: 'dataset_marketplace', label: 'Maritime Datasets', desc: 'AIS vessel tracks, wave spectra & wind', icon: <FileCode2 className="w-4 h-4 text-indigo-400" /> },
-        { id: 'marketplace', label: 'Courses & Masterclasses', desc: 'Specialist shipyard & FEA video series', icon: <GraduationCap className="w-4 h-4 text-purple-400" /> },
-        { id: 'api_sdk', label: 'Software & Plugins', desc: 'Rhino plugins & OpenFOAM mesh generators', icon: <Sparkles className="w-4 h-4 text-blue-400" /> },
-        { id: 'marketplace', label: 'Seller Dashboard', desc: 'Creator store with instant Stripe payouts', icon: <DollarSign className="w-4 h-4 text-emerald-400" /> }
-      ]
-    },
-    {
-      id: 'maritime_industry',
-      title: 'Maritime Industry',
-      view: 'maritime_industry' as ViewMode,
-      icon: <Briefcase className="w-4 h-4 text-blue-400" />,
-      items: [
-        { id: 'maritime_news_intelligence', label: 'AI News & Intelligence', desc: 'Real-time global news, IMO regulations & market insights', badge: 'PRO', icon: <Newspaper className="w-4 h-4 text-cyan-400" /> },
-        { id: 'jobs', label: 'Jobs & Careers', desc: 'Ship design, class society & offshore hiring', icon: <Briefcase className="w-4 h-4 text-blue-400" /> },
-        { id: 'company_intelligence', label: 'Companies & Fleet Owners', desc: '4,200 Verified maritime enterprises', icon: <Users className="w-4 h-4 text-cyan-400" /> },
-        { id: 'shipyard_mgmt', label: 'Shipyards & Drydocks', desc: 'Global drydock capacity & retrofit slots', icon: <Ship className="w-4 h-4 text-emerald-400" /> },
-        { id: 'maritime_gis', label: 'Ports & Terminals', desc: 'Berth allocation & congestion heatmaps', icon: <Globe className="w-4 h-4 text-amber-400" /> },
-        { id: 'ais_tracking', label: 'Shipping Intelligence', desc: 'Live AIS vessel routes & speed profiles', icon: <Compass className="w-4 h-4 text-sky-400" /> },
-        { id: 'newsletter', label: 'Maritime Daily News', desc: 'Curated IMO MEPC, shipping & market updates', icon: <Mail className="w-4 h-4 text-purple-400" /> },
-        { id: 'maritime_finance', label: 'Market Analytics & BDI', desc: 'Baltic Dry Index & bunker fuel pricing', icon: <DollarSign className="w-4 h-4 text-emerald-400" /> }
-      ]
-    },
-    {
-      id: 'community',
-      title: 'Community',
-      view: 'community' as ViewMode,
-      icon: <Users className="w-4 h-4 text-lime-400" />,
-      items: [
-        { id: 'community', label: 'Forums & Q&A', desc: '32 Technical engineering categories', icon: <Users className="w-4 h-4 text-lime-400" /> },
-        { id: 'community', label: 'Special Interest Groups', desc: 'CFD, Decarbonization, Wind, Hydrofoils', icon: <Compass className="w-4 h-4 text-cyan-400" /> },
-        { id: 'maritime_events', label: 'Events & Conferences', desc: 'SNAME, RINA & Posidonia meetups', icon: <Sparkles className="w-4 h-4 text-amber-400" /> },
-        { id: 'scholarships', label: 'Mentorship Network', desc: '1-on-1 guidance with Chief Engineers', icon: <GraduationCap className="w-4 h-4 text-purple-400" /> },
-        { id: 'scholarships', label: 'Student Chapters', desc: '65 Global maritime university branches', icon: <BookOpen className="w-4 h-4 text-indigo-400" /> },
-        { id: 'community', label: 'Discussions & Peer Review', desc: 'Verify calculations & technical review', icon: <CheckCircle2 className="w-4 h-4 text-emerald-400" /> }
-      ]
-    },
-    {
-      id: 'dashboard',
-      title: 'Dashboard',
-      view: 'dashboard' as ViewMode,
-      icon: <LayoutDashboard className="w-4 h-4 text-rose-400" />,
-      items: [
-        { id: 'dashboard', label: 'Recent Projects', desc: 'Active hull CFD & stability projects', icon: <Ship className="w-4 h-4 text-sky-400" /> },
-        { id: 'dashboard', label: 'AI Usage & Token Telemetry', desc: 'Monthly quota & model analytics', icon: <Sparkles className="w-4 h-4 text-cyan-400" /> },
-        { id: 'maritime_digital_library', label: 'Saved Files & Cloud Storage', desc: '12.4 GB Encrypted CAD/mesh storage', icon: <BookMarked className="w-4 h-4 text-amber-400" /> },
-        { id: 'learning', label: 'My Enrolled Courses', desc: 'Course progress & video bookmarks', icon: <GraduationCap className="w-4 h-4 text-purple-400" /> },
-        { id: 'saas_billing', label: 'Purchases & Invoices', desc: 'Stripe/PayPal tax receipts & records', icon: <DollarSign className="w-4 h-4 text-emerald-400" /> },
-        { id: 'certifications', label: 'Issued Certificates', desc: 'Verified CPD credentials & badges', icon: <Award className="w-4 h-4 text-blue-400" /> },
-        { id: 'saas_billing', label: 'Subscription Status', desc: 'Manage 5 SaaS tiers & team seats', badge: 'Active', icon: <ShieldAlert className="w-4 h-4 text-rose-400" /> }
-      ]
-    }
-  ];
+  const handleMouseEnter = (id: string) => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    setActiveDropdown(id);
+  };
+
+  const handleMouseLeave = () => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    timeoutRef.current = setTimeout(() => {
+      setActiveDropdown(null);
+    }, 180);
+  };
 
   return (
     <header className={`sticky top-0 z-50 backdrop-blur-xl border-b transition-colors duration-300 ${
@@ -323,25 +164,47 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
         </div>
 
-        {/* Center: Desktop Categorized 11-Hub Navigation */}
-        <nav className="hidden 2xl:flex items-center gap-1 relative overflow-x-auto py-1 scrollbar-none">
-          {primaryNavigationHubs.map((cat) => {
-            const isOpen = activeDropdown === cat.id;
-            const isCategoryActive = currentView === cat.view || cat.items.some((item) => item.id === currentView);
+        {/* Center: Desktop Categorized Dropdown System */}
+        <nav className="hidden xl:flex items-center gap-1 relative py-1">
+          {/* All Modules Catalog Button */}
+          <button
+            onClick={() => {
+              setCatalogModalOpen(true);
+              setActiveDropdown(null);
+            }}
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-bold text-sky-400 bg-sky-500/10 hover:bg-sky-500/20 border border-sky-500/30 transition shadow-sm mr-1 shrink-0"
+            title="Open Complete 90+ Maritime Modules Catalog"
+          >
+            <LayoutGrid className="w-3.5 h-3.5" />
+            <span>All Modules</span>
+            <span className="text-[9px] px-1.5 py-0.2 rounded bg-sky-500/25 text-sky-300 font-black">
+              90+
+            </span>
+          </button>
+
+          {/* 8 Primary Categorized Hub Dropdowns */}
+          {PRIMARY_NAVIGATION_HUBS.map((hub, hubIdx) => {
+            const isOpen = activeDropdown === hub.id;
+            const isCategoryActive =
+              currentView === hub.view ||
+              hub.groups.some((group) => group.items.some((item) => item.id === currentView));
+
+            // Align dropdown to the right for later items to prevent screen overflow
+            const isRightAligned = hubIdx >= 4;
 
             return (
               <div
-                key={cat.id}
+                key={hub.id}
                 className="relative"
-                onMouseEnter={() => setActiveDropdown(cat.id)}
-                onMouseLeave={() => setActiveDropdown(null)}
+                onMouseEnter={() => handleMouseEnter(hub.id)}
+                onMouseLeave={handleMouseLeave}
               >
                 <button
                   onClick={() => {
-                    setView(cat.view);
+                    setView(hub.view);
                     setActiveDropdown(null);
                   }}
-                  className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition ${
+                  className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition ${
                     isCategoryActive
                       ? 'bg-sky-500/15 text-sky-400 border border-sky-500/30 shadow-sm'
                       : isOpen
@@ -351,66 +214,119 @@ export const Navbar: React.FC<NavbarProps> = ({
                       : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                   }`}
                 >
-                  {cat.icon}
-                  <span>{cat.title}</span>
-                  <span className="text-[9px] opacity-50">▾</span>
+                  {hub.icon}
+                  <span>{hub.title}</span>
+                  <ChevronDown className={`w-3 h-3 transition-transform duration-200 opacity-60 ${isOpen ? 'rotate-180 text-sky-400 opacity-100' : ''}`} />
                 </button>
 
-                {/* Floating Dropdown Card */}
+                {/* Floating Categorized Mega-Dropdown Menu */}
                 {isOpen && (
-                  <div className="absolute left-0 top-full pt-1.5 w-72 z-50 animate-in fade-in slide-in-from-top-1 duration-150">
-                    <div className="bg-slate-900/98 backdrop-blur-2xl border border-slate-800 rounded-2xl shadow-2xl p-2 text-xs space-y-1">
-                      <div className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-sky-400 border-b border-slate-800 flex items-center justify-between">
-                        <span className="flex items-center gap-1.5">
-                          {cat.icon}
-                          {cat.title} Hub
-                        </span>
+                  <div
+                    className={`absolute top-full pt-1.5 z-50 animate-in fade-in slide-in-from-top-1 duration-150 ${
+                      isRightAligned ? 'right-0' : 'left-0'
+                    }`}
+                    style={{ width: '640px' }}
+                  >
+                    <div className="bg-slate-950/98 backdrop-blur-2xl border border-slate-800 rounded-2xl shadow-2xl p-3.5 text-xs space-y-3">
+                      {/* Dropdown Header */}
+                      <div className="px-2 pb-2.5 border-b border-slate-800/80 flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className="p-1.5 rounded-lg bg-slate-900 border border-slate-800">
+                            {hub.icon}
+                          </div>
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <span className="font-extrabold text-white text-xs tracking-tight">
+                                {hub.title} Hub
+                              </span>
+                              <span className="text-[9px] px-1.5 py-0.2 rounded bg-sky-500/20 text-sky-300 font-bold border border-sky-500/30">
+                                {hub.groups.reduce((acc, g) => acc + g.items.length, 0)} Modules
+                              </span>
+                            </div>
+                            <p className="text-[10px] text-slate-400 line-clamp-1">
+                              {hub.tagline}
+                            </p>
+                          </div>
+                        </div>
+
                         <button
                           onClick={() => {
-                            setView(cat.view);
+                            setView(hub.view);
                             setActiveDropdown(null);
                           }}
-                          className="text-[9px] bg-sky-500/20 hover:bg-sky-500/30 text-sky-300 px-1.5 py-0.5 rounded font-medium transition"
+                          className="text-[10px] bg-sky-500/20 hover:bg-sky-500/30 text-sky-300 border border-sky-500/30 px-2.5 py-1 rounded-lg font-bold transition flex items-center gap-1 shrink-0"
                         >
-                          Open Hub →
+                          <span>Open Entire Hub</span>
+                          <ArrowRight className="w-3 h-3" />
                         </button>
                       </div>
 
-                      <div className="space-y-0.5 pt-1 max-h-80 overflow-y-auto">
-                        {cat.items.map((item, idx) => {
-                          const isActive = currentView === item.id;
-                          return (
-                            <button
-                              key={`${item.id}_${idx}`}
-                              onClick={() => {
-                                setView(item.id as ViewMode);
-                                setActiveDropdown(null);
-                              }}
-                              className={`w-full text-left p-2 rounded-xl transition flex items-start gap-2.5 ${
-                                isActive
-                                  ? 'bg-sky-500/20 text-sky-300 border border-sky-500/30'
-                                  : 'hover:bg-slate-800/80 text-slate-200'
-                              }`}
-                            >
-                              <div className="p-1 rounded-lg bg-slate-950 border border-slate-800 shrink-0 mt-0.5">
-                                {item.icon}
-                              </div>
-                              <div className="flex-1 min-w-0">
-                                <div className="flex items-center justify-between gap-1">
-                                  <span className="font-bold text-xs truncate">{item.label}</span>
-                                  {item.badge && (
-                                    <span className="text-[9px] font-extrabold px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30 shrink-0">
-                                      {item.badge}
-                                    </span>
-                                  )}
-                                </div>
-                                <p className="text-[10px] text-slate-400 line-clamp-1 mt-0.5">
-                                  {item.desc}
-                                </p>
-                              </div>
-                            </button>
-                          );
-                        })}
+                      {/* 2-Column Grouped Modules Grid */}
+                      <div className="grid grid-cols-2 gap-3 max-h-[380px] overflow-y-auto pr-1">
+                        {hub.groups.map((group, gIdx) => (
+                          <div key={gIdx} className="space-y-1.5 bg-slate-900/50 p-2.5 rounded-xl border border-slate-800/60">
+                            <div className="text-[10px] font-bold uppercase tracking-wider text-sky-400/90 px-1 flex items-center justify-between">
+                              <span>{group.groupTitle}</span>
+                              <span className="text-slate-500 font-mono text-[9px]">{group.items.length}</span>
+                            </div>
+
+                            <div className="space-y-0.5">
+                              {group.items.map((item) => {
+                                const isActive = currentView === item.id;
+                                return (
+                                  <button
+                                    key={item.id}
+                                    onClick={() => {
+                                      setView(item.id);
+                                      setActiveDropdown(null);
+                                    }}
+                                    className={`w-full text-left p-1.5 rounded-lg transition flex items-start gap-2 ${
+                                      isActive
+                                        ? 'bg-sky-500/25 text-sky-300 border border-sky-500/40 shadow-sm'
+                                        : 'hover:bg-slate-800/90 text-slate-200 border border-transparent'
+                                    }`}
+                                  >
+                                    <div className="p-1 rounded-md bg-slate-950 border border-slate-800 shrink-0 mt-0.5">
+                                      {item.icon}
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                      <div className="flex items-center justify-between gap-1">
+                                        <span className="font-bold text-xs truncate">
+                                          {item.label}
+                                        </span>
+                                        {item.badge && (
+                                          <span className="text-[8px] font-black px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30 shrink-0">
+                                            {item.badge}
+                                          </span>
+                                        )}
+                                      </div>
+                                      <p className="text-[10px] text-slate-400 line-clamp-1 mt-0.5">
+                                        {item.desc}
+                                      </p>
+                                    </div>
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Dropdown Bottom Banner */}
+                      <div className="pt-1.5 border-t border-slate-800/80 flex items-center justify-between text-[10px] text-slate-400 px-1">
+                        <span className="flex items-center gap-1.5">
+                          <Sparkles className="w-3 h-3 text-sky-400" />
+                          <span>IMO, DNV & Lloyd's Register Certified Modules</span>
+                        </span>
+                        <button
+                          onClick={() => {
+                            setCatalogModalOpen(true);
+                            setActiveDropdown(null);
+                          }}
+                          className="text-sky-400 hover:text-sky-300 font-bold transition"
+                        >
+                          View All 90+ Modules →
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -655,7 +571,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Mobile Menu Button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="2xl:hidden p-2 rounded-xl border border-slate-700 text-slate-300 hover:bg-slate-800"
+            className="xl:hidden p-2 rounded-xl border border-slate-700 text-slate-300 hover:bg-slate-800"
           >
             {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
@@ -664,114 +580,218 @@ export const Navbar: React.FC<NavbarProps> = ({
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className={`xl:hidden border-b px-4 py-3 space-y-1 transition-all ${
+        <div className={`xl:hidden border-b px-4 py-3 space-y-2 transition-all max-h-[80vh] overflow-y-auto ${
           isDarkMode ? 'bg-slate-950 border-slate-800' : 'bg-white border-slate-200'
         }`}>
-          {/* Quick Search Button in Mobile Drawer */}
-          <button
-            onClick={() => {
-              setSearchOpen(true);
-              setMobileMenuOpen(false);
-            }}
-            className="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm font-semibold bg-sky-500/15 text-sky-400 border border-sky-500/30 mb-2"
-          >
-            <div className="flex items-center gap-2">
-              <Search className="w-4 h-4 text-sky-400" />
-              <span>Global Search...</span>
+          {/* Quick Action Buttons in Mobile Drawer */}
+          <div className="grid grid-cols-2 gap-2 mb-2">
+            <button
+              onClick={() => {
+                setCatalogModalOpen(true);
+                setMobileMenuOpen(false);
+              }}
+              className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-sky-500/20 text-sky-300 border border-sky-500/30"
+            >
+              <LayoutGrid className="w-4 h-4 text-sky-400" />
+              <span>All 90+ Modules</span>
+            </button>
+            <button
+              onClick={() => {
+                setSearchOpen(true);
+                setMobileMenuOpen(false);
+              }}
+              className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-slate-800 text-slate-200 border border-slate-700"
+            >
+              <Search className="w-4 h-4 text-slate-400" />
+              <span>Global Search</span>
+            </button>
+          </div>
+
+          {/* Instant Live Filter Input */}
+          <div className="relative mb-2">
+            <Search className="w-3.5 h-3.5 text-sky-400 absolute left-3 top-1/2 -translate-y-1/2" />
+            <input
+              type="text"
+              value={mobileSearchQuery}
+              onChange={(e) => setMobileSearchQuery(e.target.value)}
+              placeholder="Instant filter modules (e.g. Hull, AIS, SOLAS)..."
+              className={`w-full pl-9 pr-8 py-2 rounded-xl text-xs border outline-none ${
+                isDarkMode
+                  ? 'bg-slate-900 border-slate-700 text-white placeholder-slate-500 focus:border-sky-500'
+                  : 'bg-slate-50 border-slate-300 text-slate-900 placeholder-slate-400 focus:border-sky-500'
+              }`}
+            />
+            {mobileSearchQuery && (
+              <button
+                onClick={() => setMobileSearchQuery('')}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"
+              >
+                ✕
+              </button>
+            )}
+          </div>
+
+          {/* If Search Query Active: Show Matching Results */}
+          {mobileSearchQuery.trim() ? (
+            <div className="space-y-1 pt-1">
+              <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-1">
+                Matching Modules
+              </div>
+              {PRIMARY_NAVIGATION_HUBS.flatMap((hub) =>
+                hub.groups.flatMap((g) =>
+                  g.items.map((item) => ({ ...item, hubTitle: hub.title }))
+                )
+              )
+                .filter(
+                  (item) =>
+                    item.label.toLowerCase().includes(mobileSearchQuery.toLowerCase()) ||
+                    item.desc.toLowerCase().includes(mobileSearchQuery.toLowerCase()) ||
+                    item.hubTitle.toLowerCase().includes(mobileSearchQuery.toLowerCase())
+                )
+                .map((item) => (
+                  <button
+                    key={item.id}
+                    onClick={() => {
+                      setView(item.id);
+                      setMobileMenuOpen(false);
+                      setMobileSearchQuery('');
+                    }}
+                    className="w-full text-left p-2 rounded-xl text-xs font-semibold flex items-center justify-between transition hover:bg-slate-800 text-slate-200 border border-slate-800/80"
+                  >
+                    <div className="flex items-center gap-2">
+                      <div className="p-1 rounded bg-slate-900 border border-slate-800">
+                        {item.icon}
+                      </div>
+                      <div>
+                        <div className="font-bold">{item.label}</div>
+                        <div className="text-[10px] text-slate-400 line-clamp-1">{item.desc}</div>
+                      </div>
+                    </div>
+                    {item.badge && (
+                      <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                        {item.badge}
+                      </span>
+                    )}
+                  </button>
+                ))}
             </div>
-            <span className="text-xs px-1.5 py-0.5 rounded bg-sky-500/20 text-sky-300">
-              Fuse.js
-            </span>
-          </button>
+          ) : (
+            <>
+              {/* Home Option */}
+              <button
+                onClick={() => {
+                  setView('landing');
+                  setMobileMenuOpen(false);
+                }}
+                className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-semibold ${
+                  currentView === 'landing'
+                    ? 'bg-sky-500/20 text-sky-400'
+                    : isDarkMode
+                    ? 'text-slate-300 hover:bg-slate-900'
+                    : 'text-slate-700 hover:bg-slate-100'
+                }`}
+              >
+                <Ship className="w-4 h-4 text-sky-400" />
+                <span>Home Platform Overview</span>
+              </button>
 
-          {/* Home Option */}
-          <button
-            onClick={() => {
-              setView('landing');
-              setMobileMenuOpen(false);
-            }}
-            className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-semibold ${
-              currentView === 'landing'
-                ? 'bg-sky-500/20 text-sky-400'
-                : isDarkMode
-                ? 'text-slate-300 hover:bg-slate-900'
-                : 'text-slate-700 hover:bg-slate-100'
-            }`}
-          >
-            <Ship className="w-4 h-4 text-sky-400" />
-            <span>Home</span>
-          </button>
+              {/* Categorized Dropdown Accordions for Mobile */}
+              {PRIMARY_NAVIGATION_HUBS.map((hub) => {
+                const isCategoryActive =
+                  currentView === hub.view ||
+                  hub.groups.some((group) => group.items.some((item) => item.id === currentView));
+                const isExpanded = activeDropdown === `mobile_${hub.id}`;
+                const totalCount = hub.groups.reduce((acc, g) => acc + g.items.length, 0);
 
-          {/* Categorized Dropdown Accordions for Mobile */}
-          {primaryNavigationHubs.map((cat) => {
-            const isCategoryActive = cat.items.some((item) => item.id === currentView) || currentView === cat.id;
-            const isExpanded = activeDropdown === `mobile_${cat.id}`;
-
-            return (
-              <div key={cat.id} className="space-y-1">
-                <button
-                  onClick={() => setActiveDropdown(isExpanded ? null : `mobile_${cat.id}`)}
-                  className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm font-semibold transition ${
-                    isCategoryActive
-                      ? 'bg-sky-500/15 text-sky-400'
-                      : isDarkMode
-                      ? 'text-slate-300 hover:bg-slate-900'
-                      : 'text-slate-700 hover:bg-slate-100'
-                  }`}
-                >
-                  <div className="flex items-center gap-2">
-                    {cat.icon}
-                    <span>{cat.title}</span>
-                  </div>
-                  <span className="text-xs opacity-60">{isExpanded ? '▲' : '▼'}</span>
-                </button>
-
-                {isExpanded && (
-                  <div className="pl-4 space-y-1 py-1 border-l-2 border-sky-500/30 ml-3">
+                return (
+                  <div key={hub.id} className="space-y-1">
                     <button
-                      onClick={() => {
-                        setView(cat.id as ViewMode);
-                        setMobileMenuOpen(false);
-                      }}
-                      className="w-full text-left p-2 rounded-lg text-xs font-bold text-sky-400 hover:bg-sky-500/10 flex items-center gap-2 mb-1"
+                      onClick={() => setActiveDropdown(isExpanded ? null : `mobile_${hub.id}`)}
+                      className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm font-semibold transition ${
+                        isCategoryActive
+                          ? 'bg-sky-500/15 text-sky-400'
+                          : isDarkMode
+                          ? 'text-slate-300 hover:bg-slate-900'
+                          : 'text-slate-700 hover:bg-slate-100'
+                      }`}
                     >
-                      <Sparkles className="w-3.5 h-3.5" />
-                      <span>Open {cat.title} Hub</span>
+                      <div className="flex items-center gap-2">
+                        {hub.icon}
+                        <span>{hub.title}</span>
+                        <span className="text-[10px] px-1.5 py-0.2 rounded bg-slate-800 text-slate-400 font-bold">
+                          {totalCount}
+                        </span>
+                      </div>
+                      <ChevronDown className={`w-3.5 h-3.5 transition-transform opacity-60 ${isExpanded ? 'rotate-180 text-sky-400 opacity-100' : ''}`} />
                     </button>
-                    {cat.items.map((item) => {
-                      const isActive = currentView === item.id;
-                      return (
+
+                    {isExpanded && (
+                      <div className="pl-3 space-y-3 py-2 border-l-2 border-sky-500/30 ml-3">
                         <button
-                          key={item.id}
                           onClick={() => {
-                            setView(item.id as ViewMode);
+                            setView(hub.view);
                             setMobileMenuOpen(false);
                           }}
-                          className={`w-full text-left p-2 rounded-lg text-xs font-semibold flex items-center justify-between transition ${
-                            isActive
-                              ? 'bg-sky-500/20 text-sky-300'
-                              : 'text-slate-300 hover:bg-slate-900'
-                          }`}
+                          className="w-full text-left p-1.5 rounded-lg text-xs font-bold text-sky-400 hover:bg-sky-500/10 flex items-center gap-1.5"
                         >
-                          <div className="flex items-center gap-2">
-                            {item.icon}
-                            <span>{item.label}</span>
-                          </div>
-                          {item.badge && (
-                            <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">
-                              {item.badge}
-                            </span>
-                          )}
+                          <Sparkles className="w-3.5 h-3.5" />
+                          <span>Open Entire {hub.title} Hub →</span>
                         </button>
-                      );
-                    })}
+
+                        {hub.groups.map((group, gIdx) => (
+                          <div key={gIdx} className="space-y-1 bg-slate-900/40 p-2 rounded-xl border border-slate-800/60">
+                            <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-1">
+                              {group.groupTitle}
+                            </div>
+                            {group.items.map((item) => {
+                              const isActive = currentView === item.id;
+                              return (
+                                <button
+                                  key={item.id}
+                                  onClick={() => {
+                                    setView(item.id);
+                                    setMobileMenuOpen(false);
+                                  }}
+                                  className={`w-full text-left p-1.5 rounded-lg text-xs font-semibold flex items-center justify-between transition ${
+                                    isActive
+                                      ? 'bg-sky-500/20 text-sky-300'
+                                      : 'text-slate-300 hover:bg-slate-800'
+                                  }`}
+                                >
+                                  <div className="flex items-center gap-2 truncate">
+                                    <div className="shrink-0">{item.icon}</div>
+                                    <span className="truncate">{item.label}</span>
+                                  </div>
+                                  {item.badge && (
+                                    <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30 shrink-0">
+                                      {item.badge}
+                                    </span>
+                                  )}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
-            );
-          })}
+                );
+              })}
+            </>
+          )}
         </div>
       )}
+
+      {/* All Modules Full Catalog Modal */}
+      <AllModulesCatalogModal
+        isOpen={catalogModalOpen}
+        onClose={() => setCatalogModalOpen(false)}
+        onNavigateView={(view) => {
+          setView(view);
+          setCatalogModalOpen(false);
+        }}
+        isDarkMode={isDarkMode}
+      />
 
       {/* Global Fuzzy Search Modal */}
       <GlobalSearchModal

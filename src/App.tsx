@@ -326,7 +326,7 @@ export default function App() {
             />
           )}
 
-          {currentView === 'landing' && (
+          {(currentView === 'landing' || currentView === 'home') && (
             <LandingPage
               setView={setCurrentView}
               onSelectPlan={(plan) => openPricingModal(plan)}
@@ -446,7 +446,7 @@ export default function App() {
         {currentView === 'ai_design_review' && <AiDesignReviewView userPlan={userPlan} onOpenPricing={openPricingModal} />}
         {currentView === 'ai_maritime_search' && <AiMaritimeSearchView userPlan={userPlan} onOpenPricing={openPricingModal} onNavigateView={handleNavigateView} isDarkMode={isDarkMode} />}
         {currentView === 'ai_productivity_suite' && <AiProductivitySuiteView userPlan={userPlan} onOpenPricing={openPricingModal} />}
-        {currentView === 'maritime_super_app' && <MaritimeSuperAppView userPlan={userPlan} onOpenPricing={openPricingModal} onSelectView={setCurrentView} />}
+        {(currentView === 'maritime_super_app' || currentView === 'ai_super_app') && <MaritimeSuperAppView userPlan={userPlan} onOpenPricing={openPricingModal} onSelectView={setCurrentView} />}
 
         {/* Prompts 86-105 Enterprise & Operational Modules */}
         {currentView === 'maritime_finance' && <MaritimeFinanceView userPlan={userPlan} onOpenPricing={openPricingModal} />}
@@ -466,6 +466,7 @@ export default function App() {
         {currentView === 'workflow_automation' && <WorkflowAutomationView userPlan={userPlan} onOpenPricing={openPricingModal} />}
         {currentView === 'executive_dashboard' && <ExecutiveDashboardView userPlan={userPlan} onOpenPricing={openPricingModal} />}
         {(currentView === 'monetization_suite' ||
+          currentView === 'digital_products' ||
           currentView === 'prompt_store' ||
           currentView === 'template_store' ||
           currentView === 'maritime_bookstore' ||
@@ -545,7 +546,7 @@ export default function App() {
         {currentView === 'doc_library' && <DocumentLibraryView />}
         {currentView === 'unit_converter' && <UnitConverterView />}
         {currentView === 'scholarships' && <ScholarshipPortalView />}
-        {currentView === 'universities' && <UniversityPortalView />}
+        {(currentView === 'universities' || currentView === 'university_portal') && <UniversityPortalView />}
         {currentView === 'internships' && <InternshipPortalView />}
           </ErrorBoundary>
         </main>

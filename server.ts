@@ -10,7 +10,7 @@ const __dirname = process.cwd();
 
 async function startServer() {
   const app = express();
-  const PORT = Number(process.env.PORT) || 3000;
+  const PORT = 3000;
 
   app.use(express.json({ limit: '10mb' }));
 
@@ -227,7 +227,7 @@ async function startServer() {
           });
 
           const response = await ai.models.generateContent({
-            model: 'gemini-3.6-flash',
+            model: 'gemini-3.8-flash',
             contents: contents,
             config: {
               systemInstruction,
@@ -296,7 +296,7 @@ Provide a structured, deep technical audit:
 5. ⚠️ **Engineering Anomalies, Deficiencies & Recommended Corrective Actions**`;
 
           const response = await ai.models.generateContent({
-            model: 'gemini-3.6-flash',
+            model: 'gemini-3.8-flash',
             contents: prompt,
             config: {
               systemInstruction: "You are a Principal Marine Engineering Auditor & Naval Architect at Lloyd's Register / DNV.",
@@ -369,7 +369,7 @@ Provide:
 5. 💡 **Practical Engineering Takeaways & Sensitivity Advice**`;
 
           const response = await ai.models.generateContent({
-            model: 'gemini-3.6-flash',
+            model: 'gemini-3.8-flash',
             contents: prompt,
             config: {
               systemInstruction: "You are a Master Naval Architect and Senior Offshore Structural Engineer.",
@@ -450,7 +450,7 @@ Include:
 6. Conclusions, Sign-off Block, and Appendix Data Tables.`;
 
           const response = await ai.models.generateContent({
-            model: 'gemini-3.6-flash',
+            model: 'gemini-3.8-flash',
             contents: prompt,
             config: {
               systemInstruction: "You are a Principal Naval Architect & Chief Technical Officer authoring formal shipyard deliverables.",
@@ -534,7 +534,7 @@ Include:
 4. Mock exam sample questions with detailed step-by-step solutions.`;
 
           const response = await ai.models.generateContent({
-            model: 'gemini-3.6-flash',
+            model: 'gemini-3.8-flash',
             contents: prompt,
             config: {
               systemInstruction: "You are the Dean of Maritime Studies at World Maritime University.",
@@ -599,7 +599,7 @@ Include:
 7. References in ${format || 'IEEE'} citation format.`;
 
           const response = await ai.models.generateContent({
-            model: 'gemini-3.6-flash',
+            model: 'gemini-3.8-flash',
             contents: prompt,
             config: {
               systemInstruction: "You are an eminent Maritime Professor and Thesis Supervisor at World Maritime University and MIT Department of Mechanical & Ocean Engineering.",
@@ -684,7 +684,7 @@ Provide a detailed terminal optimization audit covering:
           }
 
           const response = await ai.models.generateContent({
-            model: 'gemini-3.6-flash',
+            model: 'gemini-3.8-flash',
             contents: prompt,
             config: {
               systemInstruction,
@@ -801,7 +801,7 @@ INSTRUCTIONS:
           });
 
           const response = await ai.models.generateContent({
-            model: 'gemini-3.6-flash',
+            model: 'gemini-3.8-flash',
             contents: contents,
             config: {
               systemInstruction,
@@ -874,7 +874,7 @@ Build Year: ${buildYear}
 Include sampling plan for Asbestos, PCBs, ODS (Ozone Depleting Substances), Organotin compounds in antifouling paints, and Heavy Metals, complying with IMO Resolution MEPC.269(68) and EU SRR 1257/2013.`;
 
           const response = await ai.models.generateContent({
-            model: 'gemini-3.6-flash',
+            model: 'gemini-3.8-flash',
             contents: prompt,
             config: {
               systemInstruction: "You are a Certified HazMat Expert & HKC IHM Auditor accredited by Lloyd's Register.",
@@ -931,7 +931,7 @@ This IHM Part I sampling plan has been prepared by a Certified HazMat Specialist
 Evaluate sea states, Beaufort scale wind risks, ECA (Emission Control Areas), fuel consumption reduction (SFOC), and ETA optimization using CII (Carbon Intensity Indicator) regulations.`;
 
           const response = await ai.models.generateContent({
-            model: 'gemini-3.6-flash',
+            model: 'gemini-3.8-flash',
             contents: prompt,
             config: {
               systemInstruction: "You are a Senior Master Mariner & Fleet Efficiency Director.",
@@ -1735,7 +1735,7 @@ Evaluate sea states, Beaufort scale wind risks, ECA (Emission Control Areas), fu
 Format response strictly as valid JSON.`;
 
           const response = await ai.models.generateContent({
-            model: 'gemini-3.6-flash',
+            model: 'gemini-3.8-flash',
             contents: prompt,
             config: {
               responseMimeType: "application/json"
@@ -1792,7 +1792,7 @@ Format response strictly as valid JSON.`;
 4. "telegram": Structured Telegram broadcast update with bullet points.`;
 
           const response = await ai.models.generateContent({
-            model: 'gemini-3.6-flash',
+            model: 'gemini-3.8-flash',
             contents: prompt,
             config: { responseMimeType: "application/json" }
           });

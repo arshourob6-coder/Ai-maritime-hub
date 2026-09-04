@@ -159,6 +159,8 @@ export type ViewMode =
   | 'doc_converter'
   | 'document_hub'
   | 'regulatory_hub'
+  | 'ai_super_app'
+  | 'university_portal'
   | 'saas_billing';
 
 export type PlanType = 'free' | 'student' | 'professional' | 'pro_plus' | 'enterprise' | 'university';
@@ -468,6 +470,7 @@ export interface ResistanceOutputs {
 
 export type CopilotModelEngine =
   | 'auto-route'
+  | 'gemini-3.8-flash'
   | 'gemini-3.6-flash'
   | 'gpt-4o'
   | 'claude-3.5-sonnet'
